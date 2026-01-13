@@ -1,8 +1,8 @@
 
 import { GoogleGenAI } from "@google/genai";
 
-// Fixed: Corrected initialization to use process.env.API_KEY directly without fallbacks
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+// Fixed: Using VITE_ prefixed env var for browser access
+const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY as string });
 
 export const getFashionAdvice = async (userPrompt: string, products: any[]) => {
   try {
