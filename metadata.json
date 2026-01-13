@@ -1,0 +1,7 @@
+{
+  "name": "Denivo - Premium Clothing",
+  "description": "A luxury e-commerce experience for the Denivo clothing brand, featuring Supabase integration and an AI-powered fashion assistant.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
