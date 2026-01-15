@@ -9,6 +9,7 @@ import CartSidebar from './components/CartSidebar';
 import AIAssistant from './components/AIAssistant';
 import AuthModal from './components/AuthModal';
 import AdminPanel from './components/AdminPanel';
+import ProductDetailPage from './components/ProductDetailPage';
 import { Loader2, ArrowRight } from 'lucide-react';
 
 const App: React.FC = () => {
@@ -19,6 +20,7 @@ const App: React.FC = () => {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [user, setUser] = useState<SupabaseUser | null>(null);
   const [view, setView] = useState<'home' | 'men' | 'women' | 'admin'>('home');
+  const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
 
   const loadCatalog = async () => {
     try {
@@ -71,19 +73,31 @@ const App: React.FC = () => {
     }
   };
 
-  const addToCart = (product: Product) => {
+  const addToCart = (product: Product, quantity: number = 1, size?: string) => {
     if (!user) {
       setIsAuthOpen(true);
       return;
     }
     setCart(prev => {
-      const existing = prev.find(item => item.id === product.id);
+      const cartKey = size ? `${product.id}-${size}` : product.id;
+      const existing = prev.find(item => 
+        size ? (item.id === product.id && item.selectedSize === size) : item.id === product.id
+      );
       if (existing) {
-        return prev.map(item => item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item);
+        return prev.map(item => 
+          (size ? (item.id === product.id && item.selectedSize === size) : item.id === product.id)
+            ? { ...item, quantity: item.quantity + quantity } 
+            : item
+        );
       }
-      return [...prev, { ...product, quantity: 1 }];
+      return [...prev, { ...product, quantity, selectedSize: size }];
     });
     setIsCartOpen(true);
+    setSelectedProductId(null); // Close product detail after adding
+  };
+
+  const openProductDetail = (productId: string) => {
+    setSelectedProductId(productId);
   };
 
   const removeFromCart = (id: string) => {
@@ -187,7 +201,13 @@ const App: React.FC = () => {
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-16">
                   {products.map(product => (
-                    <ProductCard key={product.id} product={product} onAddToCart={addToCart} onRefresh={loadCatalog} />
+                    <ProductCard 
+                      key={product.id} 
+                      product={product} 
+                      onAddToCart={() => addToCart(product)} 
+                      onRefresh={loadCatalog}
+                      onViewDetail={() => openProductDetail(product.id)}
+                    />
                   ))}
                 </div>
               )}
@@ -256,6 +276,16 @@ const App: React.FC = () => {
 
       <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
       <AIAssistant products={products} />
+
+      {/* Product Detail Page */}
+      {selectedProductId && (
+        <ProductDetailPage
+          productId={selectedProductId}
+          onClose={() => setSelectedProductId(null)}
+          onAddToCart={addToCart}
+          onOpenAuth={() => setIsAuthOpen(true)}
+        />
+      )}
     </div>
   );
 };

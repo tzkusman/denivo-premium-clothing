@@ -41,8 +41,8 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, items, onRem
               </div>
             ) : (
               <div className="space-y-6">
-                {items.map((item) => (
-                  <div key={item.id} className="flex space-x-4 border-b border-zinc-100 pb-6">
+                {items.map((item, index) => (
+                  <div key={`${item.id}-${item.selectedSize || index}`} className="flex space-x-4 border-b border-zinc-100 pb-6">
                     <img 
                       src={item.image_url || `https://picsum.photos/seed/${item.id}/200/200`} 
                       alt={item.name} 
@@ -55,6 +55,9 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, items, onRem
                           <p className="text-sm">${(item.price * item.quantity).toFixed(2)}</p>
                         </div>
                         <p className="text-xs text-zinc-500">{item.category}</p>
+                        {item.selectedSize && (
+                          <p className="text-xs text-zinc-700 font-medium mt-1">Size: {item.selectedSize}</p>
+                        )}
                       </div>
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-3 bg-zinc-50 px-2 py-1 rounded-md">

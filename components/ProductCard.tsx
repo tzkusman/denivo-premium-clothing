@@ -1,16 +1,17 @@
 
 import React from 'react';
 import { Product } from '../types';
-import { Plus, Trash2 } from 'lucide-react';
+import { Plus, Trash2, Eye } from 'lucide-react';
 import { getCurrentUser, deleteProduct } from '../services/supabase';
 
 interface ProductCardProps {
   product: Product;
   onAddToCart: (product: Product) => void;
   onRefresh?: () => void;
+  onViewDetail?: () => void;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, onRefresh }) => {
+const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, onRefresh, onViewDetail }) => {
   const [isAdmin, setIsAdmin] = React.useState(false);
 
   React.useEffect(() => {
@@ -30,14 +31,28 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, onRefre
     }
   };
 
+  const handleClick = () => {
+    if (onViewDetail) {
+      onViewDetail();
+    }
+  };
+
   return (
-    <div className="group relative">
+    <div className="group relative cursor-pointer" onClick={handleClick}>
       <div className="aspect-[3/4] overflow-hidden rounded-xl bg-zinc-100 mb-4 relative">
         <img
           src={product.image_url || `https://picsum.photos/seed/${product.id}/600/800`}
           alt={product.name}
           className="h-full w-full object-cover object-center group-hover:scale-110 transition-transform duration-700 ease-in-out"
         />
+        
+        {/* Quick View Overlay */}
+        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300 flex items-center justify-center">
+          <span className="opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium text-zinc-900 flex items-center space-x-2">
+            <Eye size={16} />
+            <span>Quick View</span>
+          </span>
+        </div>
         
         <div className="absolute bottom-4 right-4 flex flex-col space-y-2 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300">
           {isAdmin && (
@@ -49,7 +64,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, onRefre
             </button>
           )}
           <button 
-            onClick={() => onAddToCart(product)}
+            onClick={(e) => { e.stopPropagation(); onAddToCart(product); }}
             className="bg-white p-3 rounded-full shadow-lg hover:bg-zinc-900 hover:text-white transition-all"
           >
             <Plus size={20} />
