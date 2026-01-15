@@ -3,10 +3,14 @@ import React, { useState, useEffect } from 'react';
 import { 
   ChevronLeft, ChevronRight, Heart, Star, Package, 
   Truck, Shield, Ruler, Minus, Plus, ShoppingBag, 
-  Check, Loader2, X, Play 
+  Check, Loader2, X, Play, ThumbsUp, User, MessageSquare
 } from 'lucide-react';
 import { FullProduct, CartItem, Product } from '../types';
-import { fetchFullProduct, isInWishlist, addToWishlist, removeFromWishlist, getCurrentUser } from '../services/supabase';
+import { 
+  fetchFullProduct, isInWishlist, addToWishlist, removeFromWishlist, getCurrentUser,
+  fetchProductReviews, addProductReview, getUserReviewForProduct, markReviewHelpful,
+  ProductReview
+} from '../services/supabase';
 
 interface ProductDetailPageProps {
   productId: string;
@@ -26,9 +30,17 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ productId, onClos
   const [showBulkModal, setShowBulkModal] = useState(false);
   const [bulkQuantity, setBulkQuantity] = useState(10);
   const [isUser, setIsUser] = useState(false);
+  
+  // Reviews state
+  const [reviews, setReviews] = useState<ProductReview[]>([]);
+  const [showReviewForm, setShowReviewForm] = useState(false);
+  const [userReview, setUserReview] = useState<ProductReview | null>(null);
+  const [reviewForm, setReviewForm] = useState({ rating: 5, title: '', review_text: '' });
+  const [submittingReview, setSubmittingReview] = useState(false);
 
   useEffect(() => {
     loadProduct();
+    loadReviews();
     checkAuth();
   }, [productId]);
 
@@ -38,6 +50,8 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ productId, onClos
     if (user) {
       const inWishlist = await isInWishlist(productId);
       setIsFavorite(inWishlist);
+      const existingReview = await getUserReviewForProduct(productId);
+      setUserReview(existingReview);
     }
   };
 
@@ -49,6 +63,40 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ productId, onClos
       setSelectedSize(data.sizes[0].size_value);
     }
     setLoading(false);
+  };
+
+  const loadReviews = async () => {
+    const reviewsData = await fetchProductReviews(productId);
+    setReviews(reviewsData);
+  };
+
+  const handleSubmitReview = async () => {
+    if (!isUser) {
+      onOpenAuth();
+      return;
+    }
+    setSubmittingReview(true);
+    try {
+      await addProductReview(productId, reviewForm.rating, reviewForm.title, reviewForm.review_text);
+      setShowReviewForm(false);
+      setReviewForm({ rating: 5, title: '', review_text: '' });
+      await loadReviews();
+      const existingReview = await getUserReviewForProduct(productId);
+      setUserReview(existingReview);
+    } catch (err) {
+      console.error('Review error:', err);
+    } finally {
+      setSubmittingReview(false);
+    }
+  };
+
+  const handleMarkHelpful = async (reviewId: string) => {
+    try {
+      await markReviewHelpful(reviewId);
+      await loadReviews();
+    } catch (err) {
+      console.error('Helpful error:', err);
+    }
   };
 
   const toggleFavorite = async () => {
@@ -207,7 +255,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ productId, onClos
           </div>
 
           {/* Right: Product Info */}
-          <div className="lg:sticky lg:top-24 lg:self-start space-y-6">
+          <div className="space-y-6">
             {/* Materials Badge */}
             {product.details?.materials && (
               <p className="text-sm font-medium text-orange-600">{product.details.materials}</p>
@@ -365,12 +413,12 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ productId, onClos
             )}
 
             {/* Product Details */}
-            {product.details?.long_description && (
-              <div className="pt-6 border-t border-zinc-100">
-                <h3 className="font-bold text-zinc-900 mb-3">Product Details</h3>
-                <p className="text-zinc-600 text-sm leading-relaxed">{product.details.long_description}</p>
-              </div>
-            )}
+            <div className="pt-6 border-t border-zinc-100">
+              <h3 className="font-bold text-zinc-900 mb-3">Product Details</h3>
+              <p className="text-zinc-600 text-sm leading-relaxed">
+                {product.details?.long_description || product.description || 'Premium quality product crafted with attention to detail.'}
+              </p>
+            </div>
 
             {/* Features */}
             {product.details?.features && product.details.features.length > 0 && (
@@ -426,6 +474,185 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ productId, onClos
               </div>
             )}
           </div>
+        </div>
+
+        {/* Reviews Section - Full Width Below Product */}
+        <div className="mt-16 border-t border-zinc-200 pt-12">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+            <div>
+              <h2 className="text-2xl font-bold text-zinc-900 flex items-center space-x-2">
+                <MessageSquare size={24} />
+                <span>Customer Reviews</span>
+              </h2>
+              <p className="text-zinc-500 mt-1">{reviews.length} review{reviews.length !== 1 ? 's' : ''}</p>
+            </div>
+            
+            {isUser && !userReview && (
+              <button
+                onClick={() => setShowReviewForm(!showReviewForm)}
+                className="px-6 py-3 bg-zinc-900 text-white rounded-full font-medium hover:bg-zinc-800 transition-all"
+              >
+                Write a Review
+              </button>
+            )}
+            
+            {!isUser && (
+              <button
+                onClick={onOpenAuth}
+                className="px-6 py-3 border border-zinc-300 text-zinc-700 rounded-full font-medium hover:border-zinc-900 transition-all"
+              >
+                Sign in to Review
+              </button>
+            )}
+          </div>
+
+          {/* Review Form */}
+          {showReviewForm && (
+            <div className="bg-zinc-50 rounded-2xl p-6 mb-8">
+              <h3 className="font-bold text-lg mb-4">Write Your Review</h3>
+              
+              {/* Rating Stars */}
+              <div className="mb-4">
+                <label className="text-sm font-medium text-zinc-700 mb-2 block">Rating</label>
+                <div className="flex space-x-1">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      key={star}
+                      type="button"
+                      onClick={() => setReviewForm({...reviewForm, rating: star})}
+                      className="p-1 hover:scale-110 transition-transform"
+                    >
+                      <Star 
+                        size={28} 
+                        className={star <= reviewForm.rating ? 'fill-yellow-400 text-yellow-400' : 'text-zinc-300'}
+                      />
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Title */}
+              <div className="mb-4">
+                <label className="text-sm font-medium text-zinc-700 mb-2 block">Review Title</label>
+                <input
+                  type="text"
+                  placeholder="Summarize your experience"
+                  value={reviewForm.title}
+                  onChange={(e) => setReviewForm({...reviewForm, title: e.target.value})}
+                  className="w-full px-4 py-3 border border-zinc-200 rounded-xl focus:ring-2 focus:ring-zinc-900/10 outline-none"
+                />
+              </div>
+
+              {/* Review Text */}
+              <div className="mb-6">
+                <label className="text-sm font-medium text-zinc-700 mb-2 block">Your Review</label>
+                <textarea
+                  rows={4}
+                  placeholder="Tell others about your experience with this product..."
+                  value={reviewForm.review_text}
+                  onChange={(e) => setReviewForm({...reviewForm, review_text: e.target.value})}
+                  className="w-full px-4 py-3 border border-zinc-200 rounded-xl focus:ring-2 focus:ring-zinc-900/10 outline-none resize-none"
+                />
+              </div>
+
+              <div className="flex space-x-3">
+                <button
+                  onClick={handleSubmitReview}
+                  disabled={submittingReview || !reviewForm.title || !reviewForm.review_text}
+                  className="px-6 py-3 bg-zinc-900 text-white rounded-full font-medium hover:bg-zinc-800 transition-all disabled:opacity-50 flex items-center space-x-2"
+                >
+                  {submittingReview ? <Loader2 size={18} className="animate-spin" /> : null}
+                  <span>{submittingReview ? 'Submitting...' : 'Submit Review'}</span>
+                </button>
+                <button
+                  onClick={() => setShowReviewForm(false)}
+                  className="px-6 py-3 border border-zinc-200 text-zinc-700 rounded-full font-medium hover:border-zinc-900 transition-all"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* User's Own Review */}
+          {userReview && (
+            <div className="bg-green-50 border border-green-200 rounded-2xl p-6 mb-6">
+              <div className="flex items-center space-x-2 mb-2">
+                <Check size={18} className="text-green-600" />
+                <span className="text-sm font-medium text-green-700">Your Review</span>
+              </div>
+              <div className="flex items-center space-x-1 mb-2">
+                {[...Array(5)].map((_, i) => (
+                  <Star 
+                    key={i} 
+                    size={16} 
+                    className={i < userReview.rating ? 'fill-yellow-400 text-yellow-400' : 'text-zinc-200'}
+                  />
+                ))}
+              </div>
+              <h4 className="font-bold text-zinc-900 mb-1">{userReview.title}</h4>
+              <p className="text-zinc-600 text-sm">{userReview.review_text}</p>
+            </div>
+          )}
+
+          {/* Reviews List */}
+          {reviews.length > 0 ? (
+            <div className="space-y-6">
+              {reviews.filter(r => r.id !== userReview?.id).map((review) => (
+                <div key={review.id} className="border-b border-zinc-100 pb-6 last:border-0">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-zinc-100 rounded-full flex items-center justify-center">
+                        <User size={20} className="text-zinc-400" />
+                      </div>
+                      <div>
+                        <p className="font-medium text-zinc-900 text-sm">
+                          {review.user_email?.split('@')[0] || 'Anonymous'}
+                        </p>
+                        <div className="flex items-center space-x-2">
+                          <div className="flex">
+                            {[...Array(5)].map((_, i) => (
+                              <Star 
+                                key={i} 
+                                size={12} 
+                                className={i < review.rating ? 'fill-yellow-400 text-yellow-400' : 'text-zinc-200'}
+                              />
+                            ))}
+                          </div>
+                          {review.is_verified_purchase && (
+                            <span className="text-xs text-green-600 font-medium flex items-center space-x-1">
+                              <Check size={12} />
+                              <span>Verified Purchase</span>
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    <span className="text-xs text-zinc-400">
+                      {new Date(review.created_at).toLocaleDateString()}
+                    </span>
+                  </div>
+                  
+                  <h4 className="font-bold text-zinc-900 mb-1">{review.title}</h4>
+                  <p className="text-zinc-600 text-sm mb-4">{review.review_text}</p>
+                  
+                  <button
+                    onClick={() => handleMarkHelpful(review.id)}
+                    className="flex items-center space-x-2 text-sm text-zinc-500 hover:text-zinc-900 transition-colors"
+                  >
+                    <ThumbsUp size={14} />
+                    <span>Helpful ({review.helpful_count})</span>
+                  </button>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12 bg-zinc-50 rounded-2xl">
+              <MessageSquare size={40} className="mx-auto text-zinc-300 mb-4" />
+              <p className="text-zinc-500 mb-2">No reviews yet</p>
+              <p className="text-sm text-zinc-400">Be the first to share your experience!</p>
+            </div>
+          )}
         </div>
       </div>
 
