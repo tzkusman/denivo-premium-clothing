@@ -430,3 +430,110 @@ export const deleteBulkPricing = async (pricingId: string) => {
   if (error) throw error;
   return true;
 };
+
+// --- Review Types ---
+export interface ProductReview {
+  id: string;
+  product_id: string;
+  user_id: string;
+  rating: number;
+  title: string;
+  review_text: string;
+  is_verified_purchase: boolean;
+  helpful_count: number;
+  created_at: string;
+  user_email?: string;
+}
+
+// --- Review Methods ---
+export const fetchProductReviews = async (productId: string): Promise<ProductReview[]> => {
+  const { data, error } = await supabase
+    .from('product_reviews')
+    .select('*')
+    .eq('product_id', productId)
+    .order('created_at', { ascending: false });
+    
+  if (error) {
+    console.error('Error fetching reviews:', error);
+    return [];
+  }
+  return data || [];
+};
+
+export const addProductReview = async (
+  productId: string,
+  rating: number,
+  title: string,
+  reviewText: string
+) => {
+  const user = await getCurrentUser();
+  if (!user) throw new Error('Must be logged in to review');
+  
+  const { data, error } = await supabase
+    .from('product_reviews')
+    .insert([{
+      product_id: productId,
+      user_id: user.id,
+      rating,
+      title,
+      review_text: reviewText
+    }])
+    .select()
+    .single();
+    
+  if (error) throw error;
+  return data;
+};
+
+export const updateProductReview = async (
+  reviewId: string,
+  rating: number,
+  title: string,
+  reviewText: string
+) => {
+  const { data, error } = await supabase
+    .from('product_reviews')
+    .update({
+      rating,
+      title,
+      review_text: reviewText,
+      updated_at: new Date().toISOString()
+    })
+    .eq('id', reviewId)
+    .select()
+    .single();
+    
+  if (error) throw error;
+  return data;
+};
+
+export const deleteProductReview = async (reviewId: string) => {
+  const { error } = await supabase
+    .from('product_reviews')
+    .delete()
+    .eq('id', reviewId);
+    
+  if (error) throw error;
+  return true;
+};
+
+export const getUserReviewForProduct = async (productId: string): Promise<ProductReview | null> => {
+  const user = await getCurrentUser();
+  if (!user) return null;
+  
+  const { data, error } = await supabase
+    .from('product_reviews')
+    .select('*')
+    .eq('product_id', productId)
+    .eq('user_id', user.id)
+    .single();
+    
+  if (error) return null;
+  return data;
+};
+
+export const markReviewHelpful = async (reviewId: string) => {
+  const { error } = await supabase.rpc('increment_helpful_count', { review_id: reviewId });
+  if (error) throw error;
+  return true;
+};

@@ -56,9 +56,9 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
 
   if (success) {
     return (
-      <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-        <div className="absolute inset-0 bg-zinc-900/60 backdrop-blur-md" onClick={onClose} />
-        <div className="relative bg-white w-full max-w-[440px] rounded-[2rem] shadow-2xl overflow-hidden p-12 text-center animate-in zoom-in-95 duration-300">
+      <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" onClick={(e) => e.stopPropagation()}>
+        <div className="absolute inset-0 bg-zinc-900/60 backdrop-blur-md" onClick={(e) => { e.stopPropagation(); onClose(); }} />
+        <div className="relative bg-white w-full max-w-[440px] rounded-[2rem] shadow-2xl overflow-hidden p-12 text-center animate-in zoom-in-95 duration-300" onClick={(e) => e.stopPropagation()}>
           <div className="mb-6 flex justify-center">
             <div className="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center">
               <CheckCircle2 className="text-green-500" size={40} />
@@ -70,7 +70,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
             Please confirm your email to activate your account and access Denivo.
           </p>
           <button
-            onClick={onClose}
+            onClick={(e) => { e.stopPropagation(); onClose(); }}
             className="w-full bg-zinc-900 text-white py-4 rounded-2xl font-bold hover:bg-zinc-800 transition-all uppercase tracking-widest text-xs"
           >
             Got it
@@ -81,14 +81,14 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   }
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-zinc-900/60 backdrop-blur-md transition-all duration-500" onClick={onClose} />
-      <div className="relative bg-white w-full max-w-[440px] rounded-[2rem] shadow-[0_32px_64px_-12px_rgba(0,0,0,0.14)] overflow-hidden animate-in fade-in zoom-in-95 duration-300">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" onClick={(e) => e.stopPropagation()}>
+      <div className="absolute inset-0 bg-zinc-900/60 backdrop-blur-md transition-all duration-500" onClick={(e) => { e.stopPropagation(); onClose(); }} />
+      <div className="relative bg-white w-full max-w-[440px] rounded-[2rem] shadow-[0_32px_64px_-12px_rgba(0,0,0,0.14)] overflow-hidden animate-in fade-in zoom-in-95 duration-300" onClick={(e) => e.stopPropagation()}>
         
         <div className="h-2 bg-gradient-to-r from-zinc-100 via-zinc-900 to-zinc-100" />
         
         <button 
-          onClick={onClose}
+          onClick={(e) => { e.stopPropagation(); onClose(); }}
           className="absolute top-6 right-6 p-2 hover:bg-zinc-100 rounded-full transition-all text-zinc-400 hover:text-zinc-900 z-10"
         >
           <X size={20} />
@@ -106,7 +106,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} onClick={(e) => e.stopPropagation()} className="space-y-5">
             {!isLogin && (
               <div className="group">
                 <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400 mb-2 ml-1">Full Name</label>
