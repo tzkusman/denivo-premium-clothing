@@ -189,8 +189,10 @@ export const PAKISTAN_CITIES: Record<string, string[]> = {
 };
 
 // Currency formatting helper
-export const formatPKR = (amount: number): string => {
-  return `Rs. ${amount.toLocaleString('en-PK', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
+export const formatPKR = (amount: number | string | null | undefined): string => {
+  const num = typeof amount === 'string' ? parseFloat(amount) : (amount ?? 0);
+  if (isNaN(num)) return 'Rs. 0';
+  return `Rs. ${num.toLocaleString('en-PK', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
 };
 
 // Free shipping threshold in PKR

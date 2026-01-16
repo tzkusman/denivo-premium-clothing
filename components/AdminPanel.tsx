@@ -4,7 +4,8 @@ import {
   Package, Plus, Loader2, CheckCircle2, AlertCircle, Image as ImageIcon, 
   Trash2, Settings, Edit3, X, ShieldCheck, RefreshCw, 
   DollarSign, Layers, FileText, ChevronDown, ChevronUp, Save,
-  ShoppingCart, Eye, Phone, Mail, MapPin, CreditCard, Banknote, Clock, CheckCircle, Truck, XCircle
+  ShoppingCart, Eye, Phone, Mail, MapPin, CreditCard, Banknote, Clock, CheckCircle, Truck, XCircle,
+  User as UserIcon
 } from 'lucide-react';
 import { 
   addProduct, fetchProducts, deleteProduct, deleteAllProducts, updateProduct, getCurrentUser,
@@ -12,7 +13,8 @@ import {
   addProductSize, deleteProductSize, fetchProductSizes,
   updateProductDetails, fetchProductDetails,
   addBulkPricing, deleteBulkPricing, fetchBulkPricing,
-  fetchAllOrders, updateOrderStatus, updatePaymentStatus, fetchOrderItems
+  fetchAllOrders, updateOrderStatus, updatePaymentStatus, fetchOrderItems,
+  sendOrderStatusEmail
 } from '../services/supabase';
 import { Product, ProductImage, ProductSize, ProductDetails, BulkPricing, Order, OrderItem, formatPKR } from '../types';
 import { User as SupabaseUser } from '@supabase/supabase-js';
@@ -42,6 +44,8 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onProductAdded }) => {
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
   const [orderFilter, setOrderFilter] = useState<'all' | 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled'>('all');
+  const [updatingOrder, setUpdatingOrder] = useState(false);
+  const [emailSent, setEmailSent] = useState(false);
   
   // Basic product form
   const [formData, setFormData] = useState({
@@ -112,21 +116,35 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onProductAdded }) => {
     }
   };
 
-  // Handle order status update
+  // Handle order status update with email notification
   const handleUpdateOrderStatus = async (orderId: string, status: Order['status']) => {
+    setUpdatingOrder(true);
+    setEmailSent(false);
     try {
-      await updateOrderStatus(orderId, status);
+      const updatedOrder = await updateOrderStatus(orderId, status);
+      
+      // Send email notification
+      if (updatedOrder) {
+        await sendOrderStatusEmail(updatedOrder, status);
+        setEmailSent(true);
+        setTimeout(() => setEmailSent(false), 3000);
+      }
+      
       await loadOrders();
       if (selectedOrder?.id === orderId) {
         setSelectedOrder(prev => prev ? { ...prev, status } : null);
       }
     } catch (err: any) {
-      setError(err.message);
+      console.error('Error updating order status:', err);
+      setError(err.message || 'Failed to update order status');
+    } finally {
+      setUpdatingOrder(false);
     }
   };
 
   // Handle payment status update
   const handleUpdatePaymentStatus = async (orderId: string, paymentStatus: Order['payment_status']) => {
+    setUpdatingOrder(true);
     try {
       await updatePaymentStatus(orderId, paymentStatus);
       await loadOrders();
@@ -134,14 +152,24 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onProductAdded }) => {
         setSelectedOrder(prev => prev ? { ...prev, payment_status: paymentStatus } : null);
       }
     } catch (err: any) {
-      setError(err.message);
+      console.error('Error updating payment status:', err);
+      setError(err.message || 'Failed to update payment status');
+    } finally {
+      setUpdatingOrder(false);
     }
   };
 
   // View order details
   const handleViewOrder = async (order: Order) => {
     setSelectedOrder(order);
-    await loadOrderItems(order.id);
+    setOrderItems([]); // Clear previous items
+    try {
+      const items = await fetchOrderItems(order.id);
+      setOrderItems(items);
+    } catch (err) {
+      console.error('Error loading order items:', err);
+      setOrderItems([]);
+    }
   };
 
   useEffect(() => {
@@ -1140,7 +1168,7 @@ Modern slim fit"
                         <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-400 mb-2">Customer</h4>
                         <div className="space-y-2">
                           <div className="flex items-center space-x-2 text-sm">
-                            <User size={14} className="text-zinc-400" />
+                            <UserIcon size={14} className="text-zinc-400" />
                             <span>{selectedOrder.customer_name}</span>
                           </div>
                           <div className="flex items-center space-x-2 text-sm">
@@ -1245,43 +1273,54 @@ Modern slim fit"
                         </div>
                       )}
 
+                      {/* Email Sent Notification */}
+                      {emailSent && (
+                        <div className="p-3 bg-green-50 border border-green-200 rounded-lg flex items-center space-x-2 text-green-700">
+                          <Mail size={16} />
+                          <span className="text-sm font-medium">Email notification sent to customer!</span>
+                        </div>
+                      )}
+
                       {/* Status Update Buttons */}
                       <div>
-                        <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-400 mb-2">Update Status</h4>
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-400 mb-2">Update Status & Send Email</h4>
                         <div className="grid grid-cols-2 gap-2">
                           <button
                             onClick={() => handleUpdateOrderStatus(selectedOrder.id, 'confirmed')}
-                            disabled={selectedOrder.status === 'confirmed' || !isAdmin}
+                            disabled={selectedOrder.status === 'confirmed' || !isAdmin || updatingOrder}
                             className="flex items-center justify-center space-x-1 px-3 py-2 bg-blue-100 text-blue-700 rounded-lg text-xs font-bold hover:bg-blue-200 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
                           >
-                            <CheckCircle size={14} />
+                            {updatingOrder ? <Loader2 size={14} className="animate-spin" /> : <CheckCircle size={14} />}
                             <span>Confirm</span>
                           </button>
                           <button
                             onClick={() => handleUpdateOrderStatus(selectedOrder.id, 'shipped')}
-                            disabled={selectedOrder.status === 'shipped' || !isAdmin}
+                            disabled={selectedOrder.status === 'shipped' || !isAdmin || updatingOrder}
                             className="flex items-center justify-center space-x-1 px-3 py-2 bg-purple-100 text-purple-700 rounded-lg text-xs font-bold hover:bg-purple-200 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
                           >
-                            <Truck size={14} />
+                            {updatingOrder ? <Loader2 size={14} className="animate-spin" /> : <Truck size={14} />}
                             <span>Shipped</span>
                           </button>
                           <button
                             onClick={() => handleUpdateOrderStatus(selectedOrder.id, 'delivered')}
-                            disabled={selectedOrder.status === 'delivered' || !isAdmin}
+                            disabled={selectedOrder.status === 'delivered' || !isAdmin || updatingOrder}
                             className="flex items-center justify-center space-x-1 px-3 py-2 bg-green-100 text-green-700 rounded-lg text-xs font-bold hover:bg-green-200 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
                           >
-                            <CheckCircle2 size={14} />
+                            {updatingOrder ? <Loader2 size={14} className="animate-spin" /> : <CheckCircle2 size={14} />}
                             <span>Delivered</span>
                           </button>
                           <button
                             onClick={() => handleUpdateOrderStatus(selectedOrder.id, 'cancelled')}
-                            disabled={selectedOrder.status === 'cancelled' || !isAdmin}
+                            disabled={selectedOrder.status === 'cancelled' || !isAdmin || updatingOrder}
                             className="flex items-center justify-center space-x-1 px-3 py-2 bg-red-100 text-red-700 rounded-lg text-xs font-bold hover:bg-red-200 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
                           >
-                            <XCircle size={14} />
+                            {updatingOrder ? <Loader2 size={14} className="animate-spin" /> : <XCircle size={14} />}
                             <span>Cancel</span>
                           </button>
                         </div>
+                        <p className="text-[10px] text-zinc-400 mt-2 text-center">
+                          Customer will receive email notification
+                        </p>
                       </div>
 
                       {/* Payment Status for COD */}
@@ -1290,10 +1329,10 @@ Modern slim fit"
                           <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-400 mb-2">Payment Status</h4>
                           <button
                             onClick={() => handleUpdatePaymentStatus(selectedOrder.id, 'paid')}
-                            disabled={selectedOrder.payment_status === 'paid' || !isAdmin}
+                            disabled={selectedOrder.payment_status === 'paid' || !isAdmin || updatingOrder}
                             className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-green-600 text-white rounded-lg text-sm font-bold hover:bg-green-700 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
                           >
-                            <CheckCircle2 size={16} />
+                            {updatingOrder ? <Loader2 size={16} className="animate-spin" /> : <CheckCircle2 size={16} />}
                             <span>Mark as Paid</span>
                           </button>
                         </div>

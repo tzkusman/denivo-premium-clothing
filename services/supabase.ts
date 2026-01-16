@@ -1,5 +1,6 @@
 
 import { createClient, SupabaseClient, User, Session } from '@supabase/supabase-js';
+import emailjs from '@emailjs/browser';
 import { SupabaseConfig, Product, ProductImage, ProductSize, ProductDetails, BulkPricing, ProductColor, FullProduct, Order, OrderItem, CartItem, CheckoutFormData } from '../types';
 
 // Hardcoded credentials as requested by the user
@@ -711,4 +712,95 @@ export const fetchAllOrders = async (): Promise<Order[]> => {
     return [];
   }
   return data || [];
+};
+
+// EmailJS Configuration
+const EMAILJS_SERVICE_ID = 'service_25hkwer';
+const EMAILJS_TEMPLATE_ID = 'template_xayr1pr';
+const EMAILJS_PUBLIC_KEY = '3vMFDpsTIZNCA4H8m';
+
+// Send order confirmation email via EmailJS
+export const sendOrderConfirmationEmail = async (order: Order, items: OrderItem[]): Promise<boolean> => {
+  try {
+    // Format items as array of objects for EmailJS template loop
+    const ordersArray = items.map(item => ({
+      name: `${item.product_name}${item.size ? ` (${item.size})` : ''}`,
+      price: `Rs. ${Number(item.total_price).toLocaleString()}`,
+      units: item.quantity
+    }));
+
+    const templateParams = {
+      to_email: order.customer_email,
+      email: order.customer_email,
+      order_id: order.order_number,
+      customer_name: order.customer_name,
+      orders: ordersArray,
+      cost: {
+        shipping: `Rs. ${Number(order.shipping_cost || 0).toLocaleString()}`,
+        tax: `Rs. ${Number(order.tax_amount || 0).toLocaleString()}`
+      },
+      total: `Rs. ${Number(order.total).toLocaleString()}`,
+      shipping_address: order.shipping_address,
+      shipping_city: order.shipping_city,
+      shipping_state: order.shipping_state || '',
+      shipping_zip: order.shipping_zip,
+      payment_method: order.payment_method === 'cod' ? 'Cash on Delivery' : 'Online Payment'
+    };
+
+    const response = await emailjs.send(
+      EMAILJS_SERVICE_ID,
+      EMAILJS_TEMPLATE_ID,
+      templateParams,
+      EMAILJS_PUBLIC_KEY
+    );
+
+    console.log('📧 Order Confirmation Email sent:', response.status, response.text);
+    return true;
+  } catch (err) {
+    console.error('Error sending email:', err);
+    return false;
+  }
+};
+
+// Send order status update email via EmailJS
+export const sendOrderStatusEmail = async (order: Order, newStatus: string): Promise<boolean> => {
+  try {
+    const statusMessages: Record<string, string> = {
+      'confirmed': 'Your order has been confirmed and is being prepared!',
+      'shipped': 'Your order has been shipped and is on its way!',
+      'delivered': 'Your order has been delivered. Thank you!',
+      'cancelled': 'Your order has been cancelled.'
+    };
+
+    const templateParams = {
+      to_email: order.customer_email,
+      email: order.customer_email,
+      order_id: order.order_number,
+      customer_name: order.customer_name,
+      orders: [{ name: statusMessages[newStatus] || `Order ${newStatus}`, price: '', units: '' }],
+      cost: {
+        shipping: `Rs. ${Number(order.shipping_cost || 0).toLocaleString()}`,
+        tax: `Rs. ${Number(order.tax_amount || 0).toLocaleString()}`
+      },
+      total: `Rs. ${Number(order.total).toLocaleString()}`,
+      shipping_address: order.shipping_address,
+      shipping_city: order.shipping_city,
+      shipping_state: order.shipping_state || '',
+      shipping_zip: order.shipping_zip,
+      payment_method: order.payment_method === 'cod' ? 'Cash on Delivery' : 'Online Payment'
+    };
+
+    const response = await emailjs.send(
+      EMAILJS_SERVICE_ID,
+      EMAILJS_TEMPLATE_ID,
+      templateParams,
+      EMAILJS_PUBLIC_KEY
+    );
+
+    console.log('📧 Order Status Email sent:', response.status, response.text);
+    return true;
+  } catch (err) {
+    console.error('Error sending status email:', err);
+    return false;
+  }
 };

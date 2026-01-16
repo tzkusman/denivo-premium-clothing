@@ -5,7 +5,7 @@ import {
   Banknote, CheckCircle2, AlertCircle, Download, Printer
 } from 'lucide-react';
 import { CartItem, CheckoutFormData, Order, OrderItem, Invoice, PAKISTAN_PROVINCES, PAKISTAN_CITIES, formatPKR, FREE_SHIPPING_THRESHOLD } from '../types';
-import { createOrder, getCurrentUser, fetchOrderItems } from '../services/supabase';
+import { createOrder, getCurrentUser, fetchOrderItems, sendOrderConfirmationEmail } from '../services/supabase';
 import { User as SupabaseUser } from '@supabase/supabase-js';
 
 interface CheckoutPageProps {
@@ -189,6 +189,9 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cart, onClose, onOrderCompl
       setOrderItems(items);
       const generatedInvoice = generateInvoice(order, items);
       setInvoice(generatedInvoice);
+      
+      // Send confirmation email to customer
+      await sendOrderConfirmationEmail(order, items);
       
       setCompletedOrder(order);
       setOrderComplete(true);
