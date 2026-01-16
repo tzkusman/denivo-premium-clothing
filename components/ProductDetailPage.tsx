@@ -5,7 +5,7 @@ import {
   Truck, Shield, Ruler, Minus, Plus, ShoppingBag, 
   Check, Loader2, X, Play, ThumbsUp, User, MessageSquare
 } from 'lucide-react';
-import { FullProduct, CartItem, Product } from '../types';
+import { FullProduct, CartItem, Product, formatPKR } from '../types';
 import { 
   fetchFullProduct, isInWishlist, addToWishlist, removeFromWishlist, getCurrentUser,
   fetchProductReviews, addProductReview, getUserReviewForProduct, markReviewHelpful,
@@ -259,7 +259,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ productId, onClos
             <div>
               <h1 className="text-2xl font-bold text-zinc-900 mb-1">{product.name}</h1>
               <p className="text-zinc-500 mb-4">{product.details?.short_description || product.description}</p>
-              <p className="text-2xl font-bold text-zinc-900">${product.price.toFixed(2)}</p>
+              <p className="text-2xl font-bold text-zinc-900">{formatPKR(product.price)}</p>
             </div>
 
             {/* Color Variants */}
@@ -754,7 +754,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ productId, onClos
             <div className="bg-zinc-50 rounded-xl p-4 mb-6">
               <div className="flex justify-between items-center mb-2">
                 <span className="text-zinc-600">Unit Price</span>
-                <span>${product.price.toFixed(2)}</span>
+                <span>{formatPKR(product.price)}</span>
               </div>
               {discount > 0 && (
                 <div className="flex justify-between items-center mb-2 text-green-600">
@@ -764,11 +764,11 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ productId, onClos
               )}
               <div className="flex justify-between items-center pt-2 border-t border-zinc-200 font-bold text-lg">
                 <span>Total</span>
-                <span>${getBulkPrice(bulkQuantity).toFixed(2)}</span>
+                <span>{formatPKR(getBulkPrice(bulkQuantity))}</span>
               </div>
               {discount > 0 && (
                 <p className="text-sm text-green-600 mt-2">
-                  You save ${(product.price * bulkQuantity - getBulkPrice(bulkQuantity)).toFixed(2)}!
+                  You save {formatPKR(product.price * bulkQuantity - getBulkPrice(bulkQuantity))}!
                 </p>
               )}
             </div>

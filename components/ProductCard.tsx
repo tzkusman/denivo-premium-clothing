@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Product } from '../types';
+import { Product, formatPKR } from '../types';
 import { Plus, Trash2, Eye } from 'lucide-react';
 import { getCurrentUser, deleteProduct } from '../services/supabase';
 
@@ -76,7 +76,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, onRefre
           <h3 className="text-sm font-medium text-zinc-900 uppercase tracking-wide">{product.name}</h3>
           <p className="mt-1 text-xs text-zinc-500 font-medium italic">{product.category}</p>
         </div>
-        <p className="text-sm font-semibold text-zinc-900">${product.price.toFixed(2)}</p>
+        <p className="text-sm font-semibold text-zinc-900">{formatPKR(product.price)}</p>
       </div>
     </div>
   );

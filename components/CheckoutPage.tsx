@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   ChevronLeft, CreditCard, Truck, Package, Shield, 
   Check, Loader2, MapPin, User, Mail, Phone, FileText,
-  Banknote, CheckCircle2, AlertCircle
+  Banknote, CheckCircle2, AlertCircle, Download, Printer
 } from 'lucide-react';
-import { CartItem, CheckoutFormData, Order } from '../types';
-import { createOrder, getCurrentUser } from '../services/supabase';
+import { CartItem, CheckoutFormData, Order, OrderItem, Invoice, PAKISTAN_PROVINCES, PAKISTAN_CITIES, formatPKR, FREE_SHIPPING_THRESHOLD } from '../types';
+import { createOrder, getCurrentUser, fetchOrderItems } from '../services/supabase';
 import { User as SupabaseUser } from '@supabase/supabase-js';
 
 interface CheckoutPageProps {
@@ -22,6 +22,9 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cart, onClose, onOrderCompl
   const [step, setStep] = useState<'shipping' | 'payment' | 'confirm'>('shipping');
   const [orderComplete, setOrderComplete] = useState(false);
   const [completedOrder, setCompletedOrder] = useState<Order | null>(null);
+  const [invoice, setInvoice] = useState<Invoice | null>(null);
+  const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
+  const invoiceRef = useRef<HTMLDivElement>(null);
 
   const [formData, setFormData] = useState<CheckoutFormData>({
     email: '',
@@ -29,16 +32,28 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cart, onClose, onOrderCompl
     phone: '',
     address: '',
     city: '',
-    state: '',
+    state: 'Punjab',
     zip: '',
-    country: 'United States',
+    country: 'Pakistan',
     paymentMethod: 'cod',
     orderNotes: ''
   });
 
+  const [availableCities, setAvailableCities] = useState<string[]>(PAKISTAN_CITIES['Punjab']);
+
   useEffect(() => {
     checkAuth();
   }, []);
+
+  useEffect(() => {
+    if (formData.state && PAKISTAN_CITIES[formData.state]) {
+      setAvailableCities(PAKISTAN_CITIES[formData.state]);
+      // Reset city if current city not in new state
+      if (!PAKISTAN_CITIES[formData.state].includes(formData.city)) {
+        setFormData(prev => ({ ...prev, city: '' }));
+      }
+    }
+  }, [formData.state]);
 
   const checkAuth = async () => {
     const currentUser = await getCurrentUser();
@@ -53,10 +68,81 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cart, onClose, onOrderCompl
   };
 
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const shippingCost = subtotal >= 500 ? 0 : 25;
-  const taxRate = 0.08; // 8% tax
+  const shippingCost = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : 500; // Rs. 500 shipping
+  const taxRate = 0; // No additional tax for now
   const taxAmount = subtotal * taxRate;
   const total = subtotal + shippingCost + taxAmount;
+
+  // Generate invoice number
+  const generateInvoiceNumber = (orderNumber: string): string => {
+    return `INV-${orderNumber.replace('DNV-', '')}`;
+  };
+
+  // Generate invoice data
+  const generateInvoice = (order: Order, items: OrderItem[]): Invoice => {
+    return {
+      id: crypto.randomUUID(),
+      order_id: order.id,
+      invoice_number: generateInvoiceNumber(order.order_number),
+      order_number: order.order_number,
+      customer_name: order.customer_name,
+      customer_email: order.customer_email,
+      customer_phone: order.customer_phone,
+      shipping_address: order.shipping_address,
+      shipping_city: order.shipping_city,
+      shipping_state: order.shipping_state,
+      shipping_zip: order.shipping_zip,
+      items: items,
+      subtotal: order.subtotal,
+      shipping_cost: order.shipping_cost,
+      tax_amount: order.tax_amount,
+      discount_amount: order.discount_amount,
+      total: order.total,
+      payment_method: order.payment_method,
+      payment_status: order.payment_status,
+      created_at: order.created_at
+    };
+  };
+
+  // Print invoice
+  const handlePrintInvoice = () => {
+    if (invoiceRef.current) {
+      const printContent = invoiceRef.current.innerHTML;
+      const printWindow = window.open('', '_blank');
+      if (printWindow) {
+        printWindow.document.write(`
+          <html>
+            <head>
+              <title>Invoice - ${invoice?.invoice_number}</title>
+              <style>
+                body { font-family: Arial, sans-serif; padding: 40px; color: #333; }
+                .invoice-header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #000; padding-bottom: 20px; }
+                .invoice-header h1 { margin: 0; font-size: 28px; letter-spacing: 4px; }
+                .invoice-header p { margin: 5px 0; color: #666; }
+                .invoice-details { display: flex; justify-content: space-between; margin-bottom: 30px; }
+                .invoice-section { margin-bottom: 20px; }
+                .invoice-section h3 { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: #666; margin-bottom: 8px; }
+                .invoice-section p { margin: 4px 0; }
+                table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+                th { background: #f5f5f5; padding: 12px; text-align: left; font-size: 12px; text-transform: uppercase; }
+                td { padding: 12px; border-bottom: 1px solid #eee; }
+                .totals { margin-left: auto; width: 300px; }
+                .totals div { display: flex; justify-content: space-between; padding: 8px 0; }
+                .totals .total { font-weight: bold; font-size: 18px; border-top: 2px solid #000; padding-top: 12px; }
+                .footer { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; color: #666; font-size: 12px; }
+                @media print { body { padding: 20px; } }
+              </style>
+            </head>
+            <body>
+              ${printContent}
+            </body>
+          </html>
+        `);
+        printWindow.document.close();
+        printWindow.print();
+      }
+    }
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData(prev => ({
@@ -98,6 +184,12 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cart, onClose, onOrderCompl
         0 // discount
       );
 
+      // Fetch order items and generate invoice
+      const items = await fetchOrderItems(order.id);
+      setOrderItems(items);
+      const generatedInvoice = generateInvoice(order, items);
+      setInvoice(generatedInvoice);
+      
       setCompletedOrder(order);
       setOrderComplete(true);
       onOrderComplete(order);
@@ -109,58 +201,149 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cart, onClose, onOrderCompl
     }
   };
 
-  // Order Complete Screen
-  if (orderComplete && completedOrder) {
+  // Order Complete Screen with Invoice
+  if (orderComplete && completedOrder && invoice) {
     return (
       <div className="fixed inset-0 z-[80] bg-white overflow-y-auto">
-        <div className="min-h-screen flex items-center justify-center p-4">
-          <div className="max-w-lg w-full text-center">
-            <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <CheckCircle2 size={40} className="text-green-600" />
-            </div>
-            
-            <h1 className="text-3xl font-bold text-zinc-900 mb-2">Order Confirmed!</h1>
-            <p className="text-zinc-500 mb-6">Thank you for your purchase</p>
-            
-            <div className="bg-zinc-50 rounded-2xl p-6 mb-6 text-left">
-              <div className="flex justify-between items-center mb-4 pb-4 border-b border-zinc-200">
-                <span className="text-sm text-zinc-500">Order Number</span>
-                <span className="font-bold text-zinc-900">{completedOrder.order_number}</span>
+        <div className="min-h-screen p-4 py-8">
+          <div className="max-w-3xl mx-auto">
+            {/* Success Message */}
+            <div className="text-center mb-8">
+              <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <CheckCircle2 size={40} className="text-green-600" />
               </div>
-              
-              <div className="space-y-3 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-zinc-500">Payment Method</span>
-                  <span className="font-medium">
-                    {completedOrder.payment_method === 'cod' ? 'Cash on Delivery' : 'Online Payment'}
-                  </span>
+              <h1 className="text-3xl font-bold text-zinc-900 mb-2">Order Confirmed!</h1>
+              <p className="text-zinc-500">Thank you for your purchase</p>
+            </div>
+
+            {/* Invoice Actions */}
+            <div className="flex justify-center space-x-4 mb-8">
+              <button
+                onClick={handlePrintInvoice}
+                className="flex items-center space-x-2 px-6 py-3 bg-zinc-900 text-white rounded-full font-medium hover:bg-zinc-800 transition-all"
+              >
+                <Printer size={18} />
+                <span>Print Invoice</span>
+              </button>
+              <button
+                onClick={handlePrintInvoice}
+                className="flex items-center space-x-2 px-6 py-3 border border-zinc-300 text-zinc-700 rounded-full font-medium hover:border-zinc-900 transition-all"
+              >
+                <Download size={18} />
+                <span>Download PDF</span>
+              </button>
+            </div>
+
+            {/* Invoice Display */}
+            <div ref={invoiceRef} className="bg-white border border-zinc-200 rounded-2xl p-8 mb-8 shadow-sm">
+              {/* Invoice Header */}
+              <div className="invoice-header text-center mb-8 pb-6 border-b-2 border-zinc-900">
+                <h1 className="text-3xl font-display font-bold tracking-[0.3em] text-zinc-900">DENIVO</h1>
+                <p className="text-sm text-zinc-500 mt-1">Premium Clothing</p>
+              </div>
+
+              {/* Invoice Details */}
+              <div className="invoice-details grid grid-cols-2 gap-8 mb-8">
+                <div className="invoice-section">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-400 mb-2">Invoice To</h3>
+                  <p className="font-bold text-zinc-900">{invoice.customer_name}</p>
+                  <p className="text-sm text-zinc-600">{invoice.shipping_address}</p>
+                  <p className="text-sm text-zinc-600">{invoice.shipping_city}, {invoice.shipping_state} {invoice.shipping_zip}</p>
+                  <p className="text-sm text-zinc-600">Pakistan</p>
+                  <p className="text-sm text-zinc-500 mt-2">{invoice.customer_email}</p>
+                  {invoice.customer_phone && <p className="text-sm text-zinc-500">{invoice.customer_phone}</p>}
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-zinc-500">Shipping To</span>
-                  <span className="font-medium text-right">
-                    {completedOrder.shipping_city}, {completedOrder.shipping_state}
-                  </span>
+                <div className="invoice-section text-right">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-400 mb-2">Invoice Details</h3>
+                  <p className="text-sm"><strong>Invoice #:</strong> {invoice.invoice_number}</p>
+                  <p className="text-sm"><strong>Order #:</strong> {invoice.order_number}</p>
+                  <p className="text-sm"><strong>Date:</strong> {new Date(invoice.created_at).toLocaleDateString('en-PK', { 
+                    year: 'numeric', month: 'long', day: 'numeric' 
+                  })}</p>
+                  <p className="text-sm mt-2">
+                    <span className={`inline-flex px-2 py-1 rounded-full text-xs font-bold ${
+                      invoice.payment_method === 'cod' ? 'bg-amber-100 text-amber-700' : 'bg-blue-100 text-blue-700'
+                    }`}>
+                      {invoice.payment_method === 'cod' ? 'Cash on Delivery' : 'Paid Online'}
+                    </span>
+                  </p>
                 </div>
-                <div className="flex justify-between pt-3 border-t border-zinc-200">
-                  <span className="font-bold">Total</span>
-                  <span className="font-bold text-lg">${completedOrder.total.toFixed(2)}</span>
+              </div>
+
+              {/* Items Table */}
+              <table className="w-full mb-8">
+                <thead>
+                  <tr className="border-b-2 border-zinc-200">
+                    <th className="text-left py-3 text-xs font-bold uppercase tracking-wider text-zinc-500">Item</th>
+                    <th className="text-center py-3 text-xs font-bold uppercase tracking-wider text-zinc-500">Size</th>
+                    <th className="text-center py-3 text-xs font-bold uppercase tracking-wider text-zinc-500">Qty</th>
+                    <th className="text-right py-3 text-xs font-bold uppercase tracking-wider text-zinc-500">Price</th>
+                    <th className="text-right py-3 text-xs font-bold uppercase tracking-wider text-zinc-500">Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {invoice.items.map((item, idx) => (
+                    <tr key={idx} className="border-b border-zinc-100">
+                      <td className="py-4">
+                        <div className="flex items-center space-x-3">
+                          {item.product_image && (
+                            <img src={item.product_image} alt={item.product_name} className="w-12 h-14 object-cover rounded" />
+                          )}
+                          <span className="font-medium text-sm">{item.product_name}</span>
+                        </div>
+                      </td>
+                      <td className="text-center text-sm">{item.size || '-'}</td>
+                      <td className="text-center text-sm">{item.quantity}</td>
+                      <td className="text-right text-sm">{formatPKR(item.unit_price)}</td>
+                      <td className="text-right text-sm font-bold">{formatPKR(item.total_price)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+              {/* Totals */}
+              <div className="totals ml-auto w-72">
+                <div className="flex justify-between py-2 text-sm">
+                  <span className="text-zinc-500">Subtotal</span>
+                  <span>{formatPKR(invoice.subtotal)}</span>
                 </div>
+                <div className="flex justify-between py-2 text-sm">
+                  <span className="text-zinc-500">Shipping</span>
+                  <span>{invoice.shipping_cost === 0 ? <span className="text-green-600">FREE</span> : formatPKR(invoice.shipping_cost)}</span>
+                </div>
+                {invoice.discount_amount > 0 && (
+                  <div className="flex justify-between py-2 text-sm text-green-600">
+                    <span>Discount</span>
+                    <span>-{formatPKR(invoice.discount_amount)}</span>
+                  </div>
+                )}
+                <div className="flex justify-between py-3 mt-2 border-t-2 border-zinc-900">
+                  <span className="font-bold text-lg">Total</span>
+                  <span className="font-bold text-lg">{formatPKR(invoice.total)}</span>
+                </div>
+              </div>
+
+              {/* Footer */}
+              <div className="footer text-center mt-8 pt-6 border-t border-zinc-200">
+                <p className="text-xs text-zinc-400">Thank you for shopping with DENIVO</p>
+                <p className="text-xs text-zinc-400 mt-1">For queries, contact us at support@denivo.pk</p>
               </div>
             </div>
 
+            {/* COD Notice */}
             {completedOrder.payment_method === 'cod' && (
-              <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 text-left">
+              <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6">
                 <div className="flex items-start space-x-3">
                   <Banknote className="text-amber-600 mt-0.5" size={20} />
                   <div>
                     <p className="font-medium text-amber-800">Cash on Delivery</p>
-                    <p className="text-sm text-amber-700">Please keep ${completedOrder.total.toFixed(2)} ready when your order arrives.</p>
+                    <p className="text-sm text-amber-700">Please keep {formatPKR(completedOrder.total)} ready when your order arrives.</p>
                   </div>
                 </div>
               </div>
             )}
 
-            <p className="text-sm text-zinc-500 mb-6">
+            <p className="text-sm text-zinc-500 text-center mb-6">
               A confirmation email has been sent to <strong>{completedOrder.customer_email}</strong>
             </p>
 
@@ -297,7 +480,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cart, onClose, onOrderCompl
                         value={formData.phone}
                         onChange={handleInputChange}
                         className="w-full pl-10 pr-4 py-3 border border-zinc-200 rounded-xl focus:ring-2 focus:ring-zinc-900/10 outline-none"
-                        placeholder="+1 (555) 123-4567"
+                        placeholder="+92 300 1234567"
                       />
                     </div>
                   </div>
@@ -313,71 +496,72 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cart, onClose, onOrderCompl
                       value={formData.address}
                       onChange={handleInputChange}
                       className="w-full px-4 py-3 border border-zinc-200 rounded-xl focus:ring-2 focus:ring-zinc-900/10 outline-none"
-                      placeholder="123 Main Street, Apt 4B"
+                      placeholder="House 123, Street 4, Block B"
                     />
                   </div>
 
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div className="col-span-2">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-zinc-700 mb-1">
+                        Province/Region *
+                      </label>
+                      <select
+                        name="state"
+                        required
+                        value={formData.state}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-3 border border-zinc-200 rounded-xl focus:ring-2 focus:ring-zinc-900/10 outline-none bg-white"
+                      >
+                        {PAKISTAN_PROVINCES.map(province => (
+                          <option key={province} value={province}>{province}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
                       <label className="block text-sm font-medium text-zinc-700 mb-1">
                         City *
                       </label>
-                      <input
-                        type="text"
+                      <select
                         name="city"
                         required
                         value={formData.city}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-zinc-200 rounded-xl focus:ring-2 focus:ring-zinc-900/10 outline-none"
-                        placeholder="New York"
-                      />
+                        className="w-full px-4 py-3 border border-zinc-200 rounded-xl focus:ring-2 focus:ring-zinc-900/10 outline-none bg-white"
+                      >
+                        <option value="">Select City</option>
+                        {availableCities.map(city => (
+                          <option key={city} value={city}>{city}</option>
+                        ))}
+                      </select>
                     </div>
-                    <div>
-                      <label className="block text-sm font-medium text-zinc-700 mb-1">
-                        State
-                      </label>
-                      <input
-                        type="text"
-                        name="state"
-                        value={formData.state}
-                        onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-zinc-200 rounded-xl focus:ring-2 focus:ring-zinc-900/10 outline-none"
-                        placeholder="NY"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-zinc-700 mb-1">
-                        ZIP Code *
-                      </label>
-                      <input
-                        type="text"
-                        name="zip"
-                        required
-                        value={formData.zip}
-                        onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-zinc-200 rounded-xl focus:ring-2 focus:ring-zinc-900/10 outline-none"
-                        placeholder="10001"
-                      />
-                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-zinc-700 mb-1">
+                      Postal Code *
+                    </label>
+                    <input
+                      type="text"
+                      name="zip"
+                      required
+                      value={formData.zip}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 border border-zinc-200 rounded-xl focus:ring-2 focus:ring-zinc-900/10 outline-none"
+                      placeholder="54000"
+                    />
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium text-zinc-700 mb-1">
                       Country
                     </label>
-                    <select
+                    <input
+                      type="text"
                       name="country"
-                      value={formData.country}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-3 border border-zinc-200 rounded-xl focus:ring-2 focus:ring-zinc-900/10 outline-none bg-white"
-                    >
-                      <option value="United States">United States</option>
-                      <option value="Canada">Canada</option>
-                      <option value="United Kingdom">United Kingdom</option>
-                      <option value="Australia">Australia</option>
-                      <option value="Germany">Germany</option>
-                      <option value="France">France</option>
-                    </select>
+                      value="Pakistan"
+                      disabled
+                      className="w-full px-4 py-3 border border-zinc-200 rounded-xl bg-zinc-50 text-zinc-600"
+                    />
                   </div>
 
                   <div>
@@ -565,7 +749,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cart, onClose, onOrderCompl
                             {item.selectedSize && `Size: ${item.selectedSize} • `}
                             Qty: {item.quantity}
                           </p>
-                          <p className="text-sm font-bold mt-1">${(item.price * item.quantity).toFixed(2)}</p>
+                          <p className="text-sm font-bold mt-1">{formatPKR(item.price * item.quantity)}</p>
                         </div>
                       </div>
                     ))}
@@ -633,7 +817,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cart, onClose, onOrderCompl
                         <p className="text-xs text-zinc-500">Size: {item.selectedSize}</p>
                       )}
                     </div>
-                    <p className="text-sm font-bold">${(item.price * item.quantity).toFixed(2)}</p>
+                    <p className="text-sm font-bold">{formatPKR(item.price * item.quantity)}</p>
                   </div>
                 ))}
               </div>
@@ -641,26 +825,22 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cart, onClose, onOrderCompl
               <div className="border-t border-zinc-200 pt-4 space-y-3">
                 <div className="flex justify-between text-sm">
                   <span className="text-zinc-600">Subtotal</span>
-                  <span>${subtotal.toFixed(2)}</span>
+                  <span>{formatPKR(subtotal)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-zinc-600">Shipping</span>
-                  <span>{shippingCost === 0 ? <span className="text-green-600">FREE</span> : `$${shippingCost.toFixed(2)}`}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-zinc-600">Tax (8%)</span>
-                  <span>${taxAmount.toFixed(2)}</span>
+                  <span>{shippingCost === 0 ? <span className="text-green-600">FREE</span> : formatPKR(shippingCost)}</span>
                 </div>
                 <div className="flex justify-between font-bold text-lg pt-3 border-t border-zinc-200">
                   <span>Total</span>
-                  <span>${total.toFixed(2)}</span>
+                  <span>{formatPKR(total)}</span>
                 </div>
               </div>
 
-              {subtotal < 500 && (
+              {subtotal < FREE_SHIPPING_THRESHOLD && (
                 <div className="mt-4 p-3 bg-amber-50 rounded-lg">
                   <p className="text-xs text-amber-700">
-                    Add ${(500 - subtotal).toFixed(2)} more for <strong>FREE shipping</strong>
+                    Add {formatPKR(FREE_SHIPPING_THRESHOLD - subtotal)} more for <strong>FREE shipping</strong>
                   </p>
                 </div>
               )}
@@ -672,11 +852,11 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cart, onClose, onOrderCompl
                 </div>
                 <div className="flex items-center space-x-2">
                   <Truck size={14} />
-                  <span>Free returns within 30 days</span>
+                  <span>Free returns within 7 days</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Package size={14} />
-                  <span>Ships in 2-5 business days</span>
+                  <span>Ships in 3-7 business days</span>
                 </div>
               </div>
             </div>

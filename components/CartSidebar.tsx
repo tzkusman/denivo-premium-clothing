@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { X, Trash2, ChevronRight, ShoppingBag } from 'lucide-react';
-import { CartItem } from '../types';
+import { CartItem, formatPKR, FREE_SHIPPING_THRESHOLD } from '../types';
 
 interface CartSidebarProps {
   isOpen: boolean;
@@ -14,8 +14,7 @@ interface CartSidebarProps {
 
 const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, items, onRemove, onUpdateQuantity, onCheckout }) => {
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const freeShippingThreshold = 500;
-  const remainingForFreeShipping = freeShippingThreshold - total;
+  const remainingForFreeShipping = FREE_SHIPPING_THRESHOLD - total;
 
   if (!isOpen) return null;
 
@@ -55,7 +54,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, items, onRem
                       <div>
                         <div className="flex justify-between font-medium text-zinc-900 mb-1">
                           <h4 className="text-sm uppercase tracking-wide">{item.name}</h4>
-                          <p className="text-sm">${(item.price * item.quantity).toFixed(2)}</p>
+                          <p className="text-sm">{formatPKR(item.price * item.quantity)}</p>
                         </div>
                         <p className="text-xs text-zinc-500">{item.category}</p>
                         {item.selectedSize && (
@@ -96,7 +95,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, items, onRem
             {items.length > 0 && remainingForFreeShipping > 0 && (
               <div className="mb-4 p-3 bg-amber-50 rounded-lg">
                 <p className="text-xs text-amber-700 text-center">
-                  Add <strong>${remainingForFreeShipping.toFixed(2)}</strong> more for <strong>FREE shipping!</strong>
+                  Add <strong>{formatPKR(remainingForFreeShipping)}</strong> more for <strong>FREE shipping!</strong>
                 </p>
               </div>
             )}
@@ -109,7 +108,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, items, onRem
             )}
             <div className="flex justify-between items-center mb-6">
               <span className="text-zinc-600 font-medium">Subtotal</span>
-              <span className="text-xl font-bold text-zinc-900">${total.toFixed(2)}</span>
+              <span className="text-xl font-bold text-zinc-900">{formatPKR(total)}</span>
             </div>
             <button 
               onClick={onCheckout}

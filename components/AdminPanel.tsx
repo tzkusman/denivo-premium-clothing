@@ -461,12 +461,12 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onProductAdded }) => {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400 mb-2 ml-1">Price ($)</label>
+                    <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400 mb-2 ml-1">Price (PKR)</label>
                     <input
                       required
                       type="number"
-                      step="0.01"
-                      placeholder="299.00"
+                      step="1"
+                      placeholder="29900"
                       className="w-full px-5 py-4 bg-zinc-50 border border-zinc-100 rounded-2xl text-sm focus:ring-4 focus:ring-zinc-900/5 outline-none transition-all"
                       value={formData.price}
                       onChange={e => setFormData({...formData, price: e.target.value})}
