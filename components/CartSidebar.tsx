@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { X, Trash2, ChevronRight } from 'lucide-react';
+import { X, Trash2, ChevronRight, ShoppingBag } from 'lucide-react';
 import { CartItem } from '../types';
 
 interface CartSidebarProps {
@@ -9,10 +9,13 @@ interface CartSidebarProps {
   items: CartItem[];
   onRemove: (id: string) => void;
   onUpdateQuantity: (id: string, q: number) => void;
+  onCheckout: () => void;
 }
 
-const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, items, onRemove, onUpdateQuantity }) => {
+const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, items, onRemove, onUpdateQuantity, onCheckout }) => {
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const freeShippingThreshold = 500;
+  const remainingForFreeShipping = freeShippingThreshold - total;
 
   if (!isOpen) return null;
 
@@ -90,16 +93,35 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, items, onRem
           </div>
 
           <div className="border-t border-zinc-100 p-6 bg-zinc-50">
+            {items.length > 0 && remainingForFreeShipping > 0 && (
+              <div className="mb-4 p-3 bg-amber-50 rounded-lg">
+                <p className="text-xs text-amber-700 text-center">
+                  Add <strong>${remainingForFreeShipping.toFixed(2)}</strong> more for <strong>FREE shipping!</strong>
+                </p>
+              </div>
+            )}
+            {items.length > 0 && remainingForFreeShipping <= 0 && (
+              <div className="mb-4 p-3 bg-green-50 rounded-lg">
+                <p className="text-xs text-green-700 text-center font-medium">
+                  🎉 You qualify for FREE shipping!
+                </p>
+              </div>
+            )}
             <div className="flex justify-between items-center mb-6">
               <span className="text-zinc-600 font-medium">Subtotal</span>
               <span className="text-xl font-bold text-zinc-900">${total.toFixed(2)}</span>
             </div>
-            <button className="w-full bg-zinc-900 text-white py-4 rounded-xl font-bold flex items-center justify-center space-x-2 hover:bg-zinc-800 transition-all active:scale-[0.98]">
-              <span>Checkout Now</span>
+            <button 
+              onClick={onCheckout}
+              disabled={items.length === 0}
+              className="w-full bg-zinc-900 text-white py-4 rounded-xl font-bold flex items-center justify-center space-x-2 hover:bg-zinc-800 transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <ShoppingBag size={20} />
+              <span>Proceed to Checkout</span>
               <ChevronRight size={20} />
             </button>
             <p className="text-center text-xs text-zinc-400 mt-4 uppercase tracking-widest font-semibold">
-              Free Shipping & Returns
+              Secure Checkout • Free Returns
             </p>
           </div>
         </div>

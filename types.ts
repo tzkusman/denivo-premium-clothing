@@ -83,3 +83,61 @@ export interface FullProduct extends Product {
   bulk_pricing: BulkPricing[];
   colors: ProductColor[];
 }
+
+// Order System Types
+export interface ShippingAddress {
+  address: string;
+  city: string;
+  state: string;
+  zip: string;
+  country: string;
+}
+
+export interface Order {
+  id: string;
+  order_number: string;
+  user_id: string | null;
+  status: 'pending' | 'confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+  payment_method: 'cod' | 'online';
+  payment_status: 'pending' | 'paid' | 'failed' | 'refunded';
+  customer_email: string;
+  customer_name: string;
+  customer_phone: string;
+  shipping_address: string;
+  shipping_city: string;
+  shipping_state: string;
+  shipping_zip: string;
+  shipping_country: string;
+  subtotal: number;
+  discount_amount: number;
+  shipping_cost: number;
+  tax_amount: number;
+  total: number;
+  order_notes: string;
+  created_at: string;
+}
+
+export interface OrderItem {
+  id: string;
+  order_id: string;
+  product_id: string | null;
+  product_name: string;
+  product_image: string;
+  quantity: number;
+  size: string | null;
+  unit_price: number;
+  total_price: number;
+}
+
+export interface CheckoutFormData {
+  email: string;
+  fullName: string;
+  phone: string;
+  address: string;
+  city: string;
+  state: string;
+  zip: string;
+  country: string;
+  paymentMethod: 'cod' | 'online';
+  orderNotes: string;
+}

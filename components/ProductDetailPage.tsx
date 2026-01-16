@@ -116,21 +116,15 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ productId, onClos
     }
   };
 
+  // Add to bag - NO login required (guest checkout supported)
   const handleAddToBag = () => {
-    if (!isUser) {
-      onOpenAuth();
-      return;
-    }
     if (product) {
       onAddToCart(product, quantity, selectedSize || undefined);
     }
   };
 
+  // Bulk order - NO login required (guest checkout supported)
   const handleBulkOrder = () => {
-    if (!isUser) {
-      onOpenAuth();
-      return;
-    }
     if (product) {
       onAddToCart(product, bulkQuantity, selectedSize || undefined);
       setShowBulkModal(false);

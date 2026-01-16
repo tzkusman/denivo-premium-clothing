@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Product, CartItem } from './types';
+import { Product, CartItem, Order } from './types';
 import { fetchProducts, fetchProductsByCategory, onAuthChange, getSession } from './services/supabase';
 import { User as SupabaseUser } from '@supabase/supabase-js';
 import Navbar from './components/Navbar';
@@ -10,6 +10,7 @@ import AIAssistant from './components/AIAssistant';
 import AuthModal from './components/AuthModal';
 import AdminPanel from './components/AdminPanel';
 import ProductDetailPage from './components/ProductDetailPage';
+import CheckoutPage from './components/CheckoutPage';
 import { Loader2, ArrowRight } from 'lucide-react';
 
 const App: React.FC = () => {
@@ -21,6 +22,7 @@ const App: React.FC = () => {
   const [user, setUser] = useState<SupabaseUser | null>(null);
   const [view, setView] = useState<'home' | 'men' | 'women' | 'admin'>('home');
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
+  const [showCheckout, setShowCheckout] = useState(false);
 
   const loadCatalog = async () => {
     try {
@@ -65,19 +67,12 @@ const App: React.FC = () => {
   }, [view]);
 
   const handleHeroAction = () => {
-    if (!user) {
-      setIsAuthOpen(true);
-    } else {
-      const el = document.getElementById('collection-header');
-      el?.scrollIntoView({ behavior: 'smooth' });
-    }
+    const el = document.getElementById('collection-header');
+    el?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  // Add to cart - NO login required (guest checkout supported)
   const addToCart = (product: Product, quantity: number = 1, size?: string) => {
-    if (!user) {
-      setIsAuthOpen(true);
-      return;
-    }
     setCart(prev => {
       const cartKey = size ? `${product.id}-${size}` : product.id;
       const existing = prev.find(item => 
@@ -94,6 +89,17 @@ const App: React.FC = () => {
     });
     setIsCartOpen(true);
     setSelectedProductId(null); // Close product detail after adding
+  };
+
+  const handleCheckout = () => {
+    if (cart.length === 0) return;
+    setIsCartOpen(false);
+    setShowCheckout(true);
+  };
+
+  const handleOrderComplete = (order: Order) => {
+    // Clear cart after successful order
+    setCart([]);
   };
 
   const openProductDetail = (productId: string) => {
@@ -165,7 +171,7 @@ const App: React.FC = () => {
                   onClick={handleHeroAction}
                   className="bg-white text-zinc-900 px-8 py-4 rounded-full font-bold flex items-center space-x-2 hover:bg-zinc-100 transition-all shadow-2xl"
                 >
-                  <span>{user ? 'Explore Selection' : 'Join Denivo to Explore'}</span>
+                  <span>Explore Collection</span>
                   <ArrowRight size={20} />
                 </button>
               </div>
@@ -272,6 +278,7 @@ const App: React.FC = () => {
         items={cart} 
         onRemove={removeFromCart}
         onUpdateQuantity={updateQuantity}
+        onCheckout={handleCheckout}
       />
 
       <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
@@ -283,6 +290,16 @@ const App: React.FC = () => {
           productId={selectedProductId}
           onClose={() => setSelectedProductId(null)}
           onAddToCart={addToCart}
+          onOpenAuth={() => setIsAuthOpen(true)}
+        />
+      )}
+
+      {/* Checkout Page */}
+      {showCheckout && (
+        <CheckoutPage
+          cart={cart}
+          onClose={() => setShowCheckout(false)}
+          onOrderComplete={handleOrderComplete}
           onOpenAuth={() => setIsAuthOpen(true)}
         />
       )}

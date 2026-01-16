@@ -1,6 +1,6 @@
 
 import { createClient, SupabaseClient, User, Session } from '@supabase/supabase-js';
-import { SupabaseConfig, Product, ProductImage, ProductSize, ProductDetails, BulkPricing, ProductColor, FullProduct } from '../types';
+import { SupabaseConfig, Product, ProductImage, ProductSize, ProductDetails, BulkPricing, ProductColor, FullProduct, Order, OrderItem, CartItem, CheckoutFormData } from '../types';
 
 // Hardcoded credentials as requested by the user
 const SUPABASE_URL = 'https://aplibkzcysdothjgfqmc.supabase.co';
@@ -536,4 +536,179 @@ export const markReviewHelpful = async (reviewId: string) => {
   const { error } = await supabase.rpc('increment_helpful_count', { review_id: reviewId });
   if (error) throw error;
   return true;
+};
+
+// --- Order Methods ---
+
+// Generate unique order number
+const generateOrderNumber = (): string => {
+  const date = new Date();
+  const dateStr = date.toISOString().slice(0, 10).replace(/-/g, '');
+  const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+  return `DNV-${dateStr}-${random}`;
+};
+
+// Create a new order
+export const createOrder = async (
+  cartItems: CartItem[],
+  formData: CheckoutFormData,
+  subtotal: number,
+  shippingCost: number = 0,
+  taxAmount: number = 0,
+  discountAmount: number = 0
+): Promise<Order> => {
+  const user = await getCurrentUser();
+  const orderNumber = generateOrderNumber();
+  const total = subtotal + shippingCost + taxAmount - discountAmount;
+
+  // Insert order
+  const { data: orderData, error: orderError } = await supabase
+    .from('orders')
+    .insert([{
+      order_number: orderNumber,
+      user_id: user?.id || null,
+      status: 'pending',
+      payment_method: formData.paymentMethod,
+      payment_status: formData.paymentMethod === 'cod' ? 'pending' : 'pending',
+      customer_email: formData.email,
+      customer_name: formData.fullName,
+      customer_phone: formData.phone,
+      shipping_address: formData.address,
+      shipping_city: formData.city,
+      shipping_state: formData.state,
+      shipping_zip: formData.zip,
+      shipping_country: formData.country,
+      subtotal,
+      discount_amount: discountAmount,
+      shipping_cost: shippingCost,
+      tax_amount: taxAmount,
+      total,
+      order_notes: formData.orderNotes
+    }])
+    .select()
+    .single();
+
+  if (orderError) throw orderError;
+
+  // Insert order items
+  const orderItems = cartItems.map(item => ({
+    order_id: orderData.id,
+    product_id: item.id,
+    product_name: item.name,
+    product_image: item.image_url,
+    quantity: item.quantity,
+    size: item.selectedSize || null,
+    unit_price: item.price,
+    total_price: item.price * item.quantity
+  }));
+
+  const { error: itemsError } = await supabase
+    .from('order_items')
+    .insert(orderItems);
+
+  if (itemsError) throw itemsError;
+
+  return orderData;
+};
+
+// Fetch user's orders
+export const fetchUserOrders = async (): Promise<Order[]> => {
+  const user = await getCurrentUser();
+  if (!user) return [];
+
+  const { data, error } = await supabase
+    .from('orders')
+    .select('*')
+    .eq('user_id', user.id)
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching orders:', error);
+    return [];
+  }
+  return data || [];
+};
+
+// Fetch order by ID
+export const fetchOrderById = async (orderId: string): Promise<Order | null> => {
+  const { data, error } = await supabase
+    .from('orders')
+    .select('*')
+    .eq('id', orderId)
+    .single();
+
+  if (error) {
+    console.error('Error fetching order:', error);
+    return null;
+  }
+  return data;
+};
+
+// Fetch order by order number
+export const fetchOrderByNumber = async (orderNumber: string): Promise<Order | null> => {
+  const { data, error } = await supabase
+    .from('orders')
+    .select('*')
+    .eq('order_number', orderNumber)
+    .single();
+
+  if (error) {
+    console.error('Error fetching order:', error);
+    return null;
+  }
+  return data;
+};
+
+// Fetch order items
+export const fetchOrderItems = async (orderId: string): Promise<OrderItem[]> => {
+  const { data, error } = await supabase
+    .from('order_items')
+    .select('*')
+    .eq('order_id', orderId);
+
+  if (error) {
+    console.error('Error fetching order items:', error);
+    return [];
+  }
+  return data || [];
+};
+
+// Update order status (admin)
+export const updateOrderStatus = async (orderId: string, status: Order['status']): Promise<Order | null> => {
+  const { data, error } = await supabase
+    .from('orders')
+    .update({ status, updated_at: new Date().toISOString() })
+    .eq('id', orderId)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+};
+
+// Update payment status
+export const updatePaymentStatus = async (orderId: string, paymentStatus: Order['payment_status']): Promise<Order | null> => {
+  const { data, error } = await supabase
+    .from('orders')
+    .update({ payment_status: paymentStatus, updated_at: new Date().toISOString() })
+    .eq('id', orderId)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+};
+
+// Fetch all orders (admin)
+export const fetchAllOrders = async (): Promise<Order[]> => {
+  const { data, error } = await supabase
+    .from('orders')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching all orders:', error);
+    return [];
+  }
+  return data || [];
 };
