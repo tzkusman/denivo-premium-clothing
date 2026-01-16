@@ -7,6 +7,72 @@
 
 ---
 
+## 🤖 AI Assistant Context Prompt
+
+**Copy and paste this at the start of any new AI session to restore full context:**
+
+```
+I'm continuing work on the DENIVO Premium Clothing e-commerce project. Here's the context:
+
+PROJECT: DENIVO - Premium Clothing E-commerce Store
+DEVELOPER: Usman Shaik (tzkusman786@gmail.com)
+LIVE SITE: https://denivo-premium-clothing.vercel.app
+GITHUB: https://github.com/tzkusman/denivo-premium-clothing
+
+TECH STACK:
+- React 19 + TypeScript + Vite
+- Supabase (Database, Auth)
+- EmailJS (Email notifications)
+- Tailwind CSS (Styling)
+- Lucide React (Icons)
+- Google Gemini (AI Assistant)
+
+SUPABASE CONFIG:
+- URL: https://aplibkzcysdothjgfqmc.supabase.co
+- Project Ref: aplibkzcysdothjgfqmc
+- Anon Key: sb_publishable_jphwGPd_ZOog9XM5Hka7kA_kk285KuL
+- Admin Email: tzkusman786@gmail.com
+
+EMAILJS CONFIG:
+- Service ID: service_25hkwer
+- Template ID: template_xayr1pr
+- Public Key: 3vMFDpsTIZNCA4H8m
+
+LOCALIZATION:
+- Currency: PKR (Pakistani Rupee) with Rs. prefix
+- Country: Pakistan (fixed)
+- Provinces: Punjab, Sindh, KPK, Balochistan, Islamabad, AJK, Gilgit-Baltistan
+- Shipping: Rs. 500 flat rate, FREE over Rs. 50,000
+
+KEY FILES:
+- services/supabase.ts - All Supabase & EmailJS functions
+- components/AdminPanel.tsx - Admin dashboard (Products & Orders)
+- components/CheckoutPage.tsx - 3-step checkout with invoice
+- types.ts - All TypeScript types, PAKISTAN_PROVINCES, PAKISTAN_CITIES, formatPKR()
+
+FEATURES COMPLETED:
+- Product catalog with categories (Men, Women, Accessories)
+- Shopping cart with guest checkout
+- 3-step checkout (Shipping → Payment → Confirm)
+- COD and Online Payment options
+- Invoice generation with print/download
+- Admin panel with Products & Orders tabs
+- Order status management (Pending → Confirmed → Shipped → Delivered)
+- Automatic email on order placement
+- Automatic email on status updates from admin
+- Pakistan provinces/cities dropdowns
+- PKR currency throughout
+
+DATABASE TABLES:
+- products, product_images, product_sizes, product_details, bulk_pricing
+- product_reviews
+- orders, order_items
+
+Please read PROJECT_DOCUMENTATION.md in the repo for complete details.
+```
+
+---
+
 ## 📋 Table of Contents
 
 1. [Project Overview](#project-overview)
@@ -613,3 +679,324 @@ sendOrderStatusEmail(order, newStatus)
 ---
 
 *This documentation was auto-generated on January 16, 2026*
+
+---
+
+## 🧠 AI Development Log - How This Project Was Built
+
+### Session Overview
+
+This project was built collaboratively between the developer (Usman Shaik) and GitHub Copilot (Claude) over multiple sessions. Below is a complete log of how each feature was implemented.
+
+---
+
+### Phase 1: Initial Project Setup
+
+**What was done:**
+1. Created React + TypeScript + Vite project
+2. Set up Tailwind CSS via CDN
+3. Created Supabase project and connected it
+4. Built basic product catalog with categories
+
+**Key decisions:**
+- Used Vite for fast development builds
+- Chose Supabase for backend (auth + database in one)
+- Tailwind via CDN for simplicity (no PostCSS config needed)
+
+---
+
+### Phase 2: Product Management
+
+**What was done:**
+1. Created `products` table in Supabase
+2. Built AdminPanel component for CRUD operations
+3. Added product images, sizes, details, and bulk pricing tables
+4. Implemented RLS policies for admin-only write access
+
+**Key files created/modified:**
+- `components/AdminPanel.tsx` - Full admin dashboard
+- `services/supabase.ts` - All database functions
+- `types.ts` - TypeScript interfaces
+
+**Approach:**
+- Created separate tables for images, sizes, details (normalized design)
+- Used UUID primary keys with `gen_random_uuid()`
+- RLS policies check `auth.jwt() ->> 'email'` for admin access
+
+---
+
+### Phase 3: Shopping Cart & Checkout
+
+**What was done:**
+1. Built CartSidebar component
+2. Created 3-step checkout flow (Shipping → Payment → Confirm)
+3. Added guest checkout (no login required)
+4. Implemented COD and Online Payment options
+
+**Key decisions:**
+- Cart stored in React state (not persisted to DB for guests)
+- Guest checkout supported via anonymous Supabase inserts
+- Order number format: `DNV-YYYYMMDD-XXXX`
+
+---
+
+### Phase 4: Pakistan Localization (January 16, 2026)
+
+**What was done:**
+1. Changed all prices from USD ($) to PKR (Rs.)
+2. Created `formatPKR()` helper function
+3. Added `PAKISTAN_PROVINCES` and `PAKISTAN_CITIES` constants
+4. Made cities auto-populate based on province selection
+5. Set shipping to Rs. 500 flat rate, free over Rs. 50,000
+
+**Files modified:**
+- `types.ts` - Added constants and formatPKR function
+- `components/CheckoutPage.tsx` - Updated shipping form
+- `components/ProductCard.tsx` - Updated price display
+- `components/CartSidebar.tsx` - Updated totals
+- `components/ProductDetailPage.tsx` - Updated price display
+
+**Code example:**
+```typescript
+export const formatPKR = (amount: number): string => {
+  return `Rs. ${amount.toLocaleString('en-PK')}`;
+};
+
+export const PAKISTAN_PROVINCES = [
+  'Punjab', 'Sindh', 'Khyber Pakhtunkhwa', 'Balochistan',
+  'Islamabad Capital Territory', 'Azad Jammu & Kashmir', 'Gilgit-Baltistan'
+];
+```
+
+---
+
+### Phase 5: Orders Management (January 16, 2026)
+
+**What was done:**
+1. Created `orders` and `order_items` tables
+2. Built Orders tab in AdminPanel with filters
+3. Added order detail panel showing customer info, items, address
+4. Implemented status updates (Pending → Confirmed → Shipped → Delivered)
+5. Added "Mark as Paid" for COD orders
+
+**Key challenges solved:**
+- **RLS Policy Error:** Orders weren't being created. Fixed by allowing `anon` role to INSERT.
+- **"User is not defined" Error:** Was using `<User>` icon without importing. Fixed by adding `User as UserIcon` import from lucide-react.
+
+**SQL for orders:**
+```sql
+CREATE TABLE orders (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    order_number TEXT UNIQUE NOT NULL,
+    status TEXT DEFAULT 'pending',
+    payment_method TEXT NOT NULL,
+    customer_email TEXT NOT NULL,
+    -- ... more fields
+);
+
+-- Allow guest checkout
+CREATE POLICY "orders_insert_policy" ON orders FOR INSERT WITH CHECK (true);
+```
+
+---
+
+### Phase 6: Invoice Generation (January 16, 2026)
+
+**What was done:**
+1. Created Invoice interface in types.ts
+2. Built `generateInvoice()` function
+3. Added invoice display after order completion
+4. Implemented Print and Download buttons
+
+**Invoice format:**
+- Invoice Number: `INV-YYYYMMDD-XXXX`
+- Shows all order details, items, shipping, total
+- Print uses `window.print()`
+- Download creates text file
+
+---
+
+### Phase 7: Email Integration (January 16, 2026)
+
+**Initial approach (failed):**
+1. Created Supabase Edge Function
+2. Integrated with Resend API
+3. **Problem:** CORS errors, JWT validation issues
+
+**Final approach (succeeded):**
+1. Switched to EmailJS (client-side email)
+2. Installed `@emailjs/browser` package
+3. Created email template in EmailJS dashboard
+4. Emails sent on:
+   - Order placement (automatic)
+   - Admin status updates (Confirm, Ship, Deliver, Cancel)
+
+**EmailJS integration code:**
+```typescript
+import emailjs from '@emailjs/browser';
+
+const EMAILJS_SERVICE_ID = 'service_25hkwer';
+const EMAILJS_TEMPLATE_ID = 'template_xayr1pr';
+const EMAILJS_PUBLIC_KEY = '3vMFDpsTIZNCA4H8m';
+
+export const sendOrderConfirmationEmail = async (order, items) => {
+  const templateParams = {
+    to_email: order.customer_email,
+    order_id: order.order_number,
+    customer_name: order.customer_name,
+    orders: items.map(item => ({
+      name: item.product_name,
+      price: `Rs. ${item.total_price}`,
+      units: item.quantity
+    })),
+    total: `Rs. ${order.total}`,
+    // ... more fields
+  };
+
+  await emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams, PUBLIC_KEY);
+};
+```
+
+---
+
+### Phase 8: Deployment
+
+**Deployment platform:** Vercel
+
+**Commands used:**
+```bash
+npm run build
+npx vercel --prod --yes
+```
+
+**Live URL:** https://denivo-premium-clothing.vercel.app
+
+---
+
+### Debugging Log
+
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Products not loading | RLS policy blocking reads | Added `FOR SELECT USING (true)` policy |
+| Orders not creating | RLS blocking anon inserts | Added `FOR INSERT WITH CHECK (true)` for anon |
+| Blank page on order click | `User` icon not imported | Added `User as UserIcon` from lucide-react |
+| 422 Email error | Wrong template variable | Changed `email` to `to_email` in EmailJS |
+| 401 Edge Function | Invalid JWT | Switched to EmailJS (no JWT needed) |
+| CORS error | Edge Function missing headers | Added CORS headers, but eventually used EmailJS |
+
+---
+
+### AI Prompting Patterns Used
+
+**For adding features:**
+```
+"Add [feature] to [component]. It should [behavior]. Show in [location]."
+```
+
+**For fixing errors:**
+```
+"[Error message] - this happens when [action]. Fix it."
+```
+
+**For refactoring:**
+```
+"Change all [X] to [Y] throughout the project."
+```
+
+**For deployment:**
+```
+"Build and deploy to Vercel."
+```
+
+---
+
+### Files Created/Modified Summary
+
+| File | Purpose | Lines |
+|------|---------|-------|
+| `App.tsx` | Main app with routing | ~300 |
+| `types.ts` | TypeScript types, constants | ~200 |
+| `services/supabase.ts` | All Supabase + EmailJS functions | ~800 |
+| `services/gemini.ts` | AI assistant integration | ~50 |
+| `components/AdminPanel.tsx` | Admin dashboard | ~1400 |
+| `components/CheckoutPage.tsx` | 3-step checkout | ~900 |
+| `components/ProductCard.tsx` | Product display | ~100 |
+| `components/CartSidebar.tsx` | Shopping cart | ~200 |
+| `components/ProductDetailPage.tsx` | Full product page | ~400 |
+| `components/AuthModal.tsx` | Login/Signup | ~200 |
+| `components/Navbar.tsx` | Navigation | ~150 |
+| `components/AIAssistant.tsx` | Gemini chat | ~200 |
+
+---
+
+### How to Continue Development
+
+1. **Read this documentation** - Understand the structure
+2. **Copy the AI Context Prompt** (at top of this file) - Paste into new AI session
+3. **Pull latest from GitHub:**
+   ```bash
+   git pull origin main
+   npm install
+   npm run dev
+   ```
+4. **Make changes and deploy:**
+   ```bash
+   npm run build
+   npx vercel --prod --yes
+   git add -A && git commit -m "message" && git push
+   ```
+
+---
+
+### Architecture Diagram
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                        FRONTEND                              │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────┐ │
+│  │   React     │  │  Tailwind   │  │    Lucide Icons     │ │
+│  │   + Vite    │  │    CSS      │  │                     │ │
+│  └─────────────┘  └─────────────┘  └─────────────────────┘ │
+└────────────────────────────┬────────────────────────────────┘
+                             │
+                             ▼
+┌─────────────────────────────────────────────────────────────┐
+│                       SERVICES                               │
+│  ┌─────────────────────┐  ┌─────────────────────────────┐  │
+│  │   Supabase Client   │  │        EmailJS              │  │
+│  │   (Auth + Database) │  │   (Email Notifications)     │  │
+│  └─────────────────────┘  └─────────────────────────────┘  │
+└────────────────────────────┬────────────────────────────────┘
+                             │
+                             ▼
+┌─────────────────────────────────────────────────────────────┐
+│                       SUPABASE                               │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────┐ │
+│  │   Auth      │  │  PostgreSQL │  │    Row Level        │ │
+│  │             │  │  Database   │  │    Security         │ │
+│  └─────────────┘  └─────────────┘  └─────────────────────┘ │
+│                                                              │
+│  Tables: products, product_images, product_sizes,           │
+│          product_details, bulk_pricing, product_reviews,    │
+│          orders, order_items                                 │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+### Thank You Note
+
+This project was built with ❤️ by Usman Shaik with assistance from GitHub Copilot (Claude). 
+
+The AI helped with:
+- Writing React components
+- Designing database schema
+- Debugging errors
+- Integrating third-party services
+- Writing documentation
+
+For any questions, contact: tzkusman786@gmail.com
+
+---
+
+*End of Documentation*
