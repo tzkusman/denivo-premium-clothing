@@ -3,24 +3,41 @@ import { createClient, SupabaseClient, User, Session } from '@supabase/supabase-
 import emailjs from '@emailjs/browser';
 import { SupabaseConfig, Product, ProductImage, ProductSize, ProductDetails, BulkPricing, ProductColor, FullProduct, Order, OrderItem, CartItem, CheckoutFormData } from '../types';
 
-// Hardcoded credentials as requested by the user
-const SUPABASE_URL = 'https://aplibkzcysdothjgfqmc.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_jphwGPd_ZOog9XM5Hka7kA_kk285KuL';
+// Use environment variables for Supabase credentials
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-// Ensure persistence is enabled and URL detection is active
-let supabase: SupabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-  auth: {
-    persistSession: true,
-    autoRefreshToken: true,
-    detectSessionInUrl: true
+// Validate that keys are set
+if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+  console.error('Supabase environment variables are not set. Please check your .env file.');
+}
+
+// Lazy initialize Supabase client
+let supabase: SupabaseClient | null = null;
+
+const initializeSupabaseClient = (): SupabaseClient => {
+  if (!supabase) {
+    try {
+      supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+        auth: {
+          persistSession: true,
+          autoRefreshToken: true,
+          detectSessionInUrl: true
+        }
+      });
+    } catch (error) {
+      console.error('Failed to initialize Supabase:', error);
+      throw error;
+    }
   }
-});
+  return supabase;
+};
 
-export const getSupabaseClient = () => supabase;
+export const getSupabaseClient = (): SupabaseClient => initializeSupabaseClient();
 
 // --- Auth Methods ---
 export const signUp = async (email: string, password: string, fullName: string) => {
-  return await supabase.auth.signUp({
+  return await getSupabaseClient().auth.signUp({
     email,
     password,
     options: {
@@ -31,25 +48,25 @@ export const signUp = async (email: string, password: string, fullName: string) 
 };
 
 export const signIn = async (email: string, password: string) => {
-  return await supabase.auth.signInWithPassword({ email, password });
+  return await getSupabaseClient().auth.signInWithPassword({ email, password });
 };
 
 export const signOut = async () => {
-  await supabase.auth.signOut();
+  await getSupabaseClient().auth.signOut();
 };
 
 export const getSession = async (): Promise<Session | null> => {
-  const { data: { session } } = await supabase.auth.getSession();
+  const { data: { session } } = await getSupabaseClient().auth.getSession();
   return session;
 };
 
 export const getCurrentUser = async (): Promise<User | null> => {
-  const { data: { user } } = await supabase.auth.getUser();
+  const { data: { user } } = await getSupabaseClient().auth.getUser();
   return user;
 };
 
 export const onAuthChange = (callback: (user: User | null, session: Session | null) => void) => {
-  const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+  const { data: { subscription } } = getSupabaseClient().auth.onAuthStateChange((_event, session) => {
     callback(session?.user ?? null, session);
   });
   return () => subscription.unsubscribe();
@@ -57,7 +74,7 @@ export const onAuthChange = (callback: (user: User | null, session: Session | nu
 
 // --- Product Methods ---
 export const fetchProducts = async (): Promise<Product[]> => {
-  const { data, error } = await supabase.from('products').select('*').order('created_at', { ascending: false });
+  const { data, error } = await getSupabaseClient().from('products').select('*').order('created_at', { ascending: false });
   if (error) {
     console.error('Error fetching products:', error);
     return [];
@@ -66,7 +83,7 @@ export const fetchProducts = async (): Promise<Product[]> => {
 };
 
 export const fetchProductsByCategory = async (category: string): Promise<Product[]> => {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabaseClient()
     .from('products')
     .select('*')
     .ilike('category', category)
@@ -80,7 +97,7 @@ export const fetchProductsByCategory = async (category: string): Promise<Product
 };
 
 export const addProduct = async (product: Omit<Product, 'id'>) => {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabaseClient()
     .from('products')
     .insert([product])
     .select();
@@ -90,7 +107,7 @@ export const addProduct = async (product: Omit<Product, 'id'>) => {
 };
 
 export const updateProduct = async (id: string, updates: Partial<Omit<Product, 'id'>>) => {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabaseClient()
     .from('products')
     .update(updates)
     .eq('id', id)
@@ -101,8 +118,7 @@ export const updateProduct = async (id: string, updates: Partial<Omit<Product, '
 };
 
 export const deleteProduct = async (id: string) => {
-  // count: 'exact' ensures we know if RLS silently blocked the delete
-  const { error, count } = await supabase
+  const { error, count } = await getSupabaseClient()
     .from('products')
     .delete({ count: 'exact' })
     .eq('id', id);
@@ -120,8 +136,7 @@ export const deleteProduct = async (id: string) => {
 };
 
 export const deleteAllProducts = async () => {
-  // Standard 'delete all' pattern that avoids using banned table users
-  const { error, count } = await supabase
+  const { error, count } = await getSupabaseClient()
     .from('products')
     .delete({ count: 'exact' })
     .filter('id', 'not.is', null);
@@ -145,7 +160,7 @@ export const initializeSupabase = (config: SupabaseConfig) => {
 
 // --- Product Detail Methods ---
 export const fetchProductById = async (id: string): Promise<Product | null> => {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabaseClient()
     .from('products')
     .select('*')
     .eq('id', id)
@@ -159,7 +174,7 @@ export const fetchProductById = async (id: string): Promise<Product | null> => {
 };
 
 export const fetchProductImages = async (productId: string): Promise<ProductImage[]> => {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabaseClient()
     .from('product_images')
     .select('*')
     .eq('product_id', productId)
@@ -173,7 +188,7 @@ export const fetchProductImages = async (productId: string): Promise<ProductImag
 };
 
 export const fetchProductSizes = async (productId: string): Promise<ProductSize[]> => {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabaseClient()
     .from('product_sizes')
     .select('*')
     .eq('product_id', productId)
@@ -187,7 +202,7 @@ export const fetchProductSizes = async (productId: string): Promise<ProductSize[
 };
 
 export const fetchProductDetails = async (productId: string): Promise<ProductDetails | null> => {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabaseClient()
     .from('product_details')
     .select('*')
     .eq('product_id', productId)
@@ -201,7 +216,7 @@ export const fetchProductDetails = async (productId: string): Promise<ProductDet
 };
 
 export const fetchBulkPricing = async (productId: string): Promise<BulkPricing[]> => {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabaseClient()
     .from('bulk_pricing')
     .select('*')
     .eq('product_id', productId)
@@ -215,7 +230,7 @@ export const fetchBulkPricing = async (productId: string): Promise<BulkPricing[]
 };
 
 export const fetchProductColors = async (productId: string): Promise<ProductColor[]> => {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabaseClient()
     .from('product_colors')
     .select('*')
     .eq('product_id', productId)
@@ -255,7 +270,7 @@ export const addToWishlist = async (productId: string) => {
   const user = await getCurrentUser();
   if (!user) throw new Error('Must be logged in');
   
-  const { error } = await supabase
+  const { error } = await getSupabaseClient()
     .from('wishlist')
     .insert([{ user_id: user.id, product_id: productId }]);
     
@@ -267,7 +282,7 @@ export const removeFromWishlist = async (productId: string) => {
   const user = await getCurrentUser();
   if (!user) throw new Error('Must be logged in');
   
-  const { error } = await supabase
+  const { error } = await getSupabaseClient()
     .from('wishlist')
     .delete()
     .eq('user_id', user.id)
@@ -281,7 +296,7 @@ export const isInWishlist = async (productId: string): Promise<boolean> => {
   const user = await getCurrentUser();
   if (!user) return false;
   
-  const { data } = await supabase
+  const { data } = await getSupabaseClient()
     .from('wishlist')
     .select('id')
     .eq('user_id', user.id)
@@ -295,7 +310,7 @@ export const fetchUserWishlist = async (): Promise<Product[]> => {
   const user = await getCurrentUser();
   if (!user) return [];
   
-  const { data, error } = await supabase
+  const { data, error } = await getSupabaseClient()
     .from('wishlist')
     .select('product_id, products(*)')
     .eq('user_id', user.id);
@@ -316,8 +331,7 @@ export const addProductWithDetails = async (
   images?: Partial<Omit<ProductImage, 'id' | 'product_id'>>[],
   bulkPricing?: Partial<Omit<BulkPricing, 'id' | 'product_id'>>[]
 ) => {
-  // Insert main product
-  const { data: productData, error: productError } = await supabase
+  const { data: productData, error: productError } = await getSupabaseClient()
     .from('products')
     .insert([product])
     .select()
@@ -327,30 +341,26 @@ export const addProductWithDetails = async (
   
   const productId = productData.id;
   
-  // Insert details if provided
   if (details) {
-    await supabase
+    await getSupabaseClient()
       .from('product_details')
       .insert([{ ...details, product_id: productId }]);
   }
   
-  // Insert sizes if provided
   if (sizes && sizes.length > 0) {
-    await supabase
+    await getSupabaseClient()
       .from('product_sizes')
       .insert(sizes.map(s => ({ ...s, product_id: productId })));
   }
   
-  // Insert images if provided
   if (images && images.length > 0) {
-    await supabase
+    await getSupabaseClient()
       .from('product_images')
       .insert(images.map(i => ({ ...i, product_id: productId })));
   }
   
-  // Insert bulk pricing if provided
   if (bulkPricing && bulkPricing.length > 0) {
-    await supabase
+    await getSupabaseClient()
       .from('bulk_pricing')
       .insert(bulkPricing.map(b => ({ ...b, product_id: productId })));
   }
@@ -358,9 +368,8 @@ export const addProductWithDetails = async (
   return productData;
 };
 
-// --- Admin: Update Product Details ---
 export const updateProductDetails = async (productId: string, details: Partial<Omit<ProductDetails, 'id' | 'product_id'>>) => {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabaseClient()
     .from('product_details')
     .upsert([{ ...details, product_id: productId }])
     .select();
@@ -369,9 +378,8 @@ export const updateProductDetails = async (productId: string, details: Partial<O
   return data;
 };
 
-// --- Admin: Manage Sizes ---
 export const addProductSize = async (productId: string, size: Partial<Omit<ProductSize, 'id' | 'product_id'>>) => {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabaseClient()
     .from('product_sizes')
     .insert([{ ...size, product_id: productId }])
     .select();
@@ -381,7 +389,7 @@ export const addProductSize = async (productId: string, size: Partial<Omit<Produ
 };
 
 export const deleteProductSize = async (sizeId: string) => {
-  const { error } = await supabase
+  const { error } = await getSupabaseClient()
     .from('product_sizes')
     .delete()
     .eq('id', sizeId);
@@ -390,9 +398,8 @@ export const deleteProductSize = async (sizeId: string) => {
   return true;
 };
 
-// --- Admin: Manage Images ---
 export const addProductImage = async (productId: string, image: Partial<Omit<ProductImage, 'id' | 'product_id'>>) => {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabaseClient()
     .from('product_images')
     .insert([{ ...image, product_id: productId }])
     .select();
@@ -402,7 +409,7 @@ export const addProductImage = async (productId: string, image: Partial<Omit<Pro
 };
 
 export const deleteProductImage = async (imageId: string) => {
-  const { error } = await supabase
+  const { error } = await getSupabaseClient()
     .from('product_images')
     .delete()
     .eq('id', imageId);
@@ -411,9 +418,8 @@ export const deleteProductImage = async (imageId: string) => {
   return true;
 };
 
-// --- Admin: Manage Bulk Pricing ---
 export const addBulkPricing = async (productId: string, pricing: Partial<Omit<BulkPricing, 'id' | 'product_id'>>) => {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabaseClient()
     .from('bulk_pricing')
     .insert([{ ...pricing, product_id: productId }])
     .select();
@@ -423,7 +429,7 @@ export const addBulkPricing = async (productId: string, pricing: Partial<Omit<Bu
 };
 
 export const deleteBulkPricing = async (pricingId: string) => {
-  const { error } = await supabase
+  const { error } = await getSupabaseClient()
     .from('bulk_pricing')
     .delete()
     .eq('id', pricingId);
@@ -432,7 +438,6 @@ export const deleteBulkPricing = async (pricingId: string) => {
   return true;
 };
 
-// --- Review Types ---
 export interface ProductReview {
   id: string;
   product_id: string;
@@ -446,9 +451,8 @@ export interface ProductReview {
   user_email?: string;
 }
 
-// --- Review Methods ---
 export const fetchProductReviews = async (productId: string): Promise<ProductReview[]> => {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabaseClient()
     .from('product_reviews')
     .select('*')
     .eq('product_id', productId)
@@ -470,7 +474,7 @@ export const addProductReview = async (
   const user = await getCurrentUser();
   if (!user) throw new Error('Must be logged in to review');
   
-  const { data, error } = await supabase
+  const { data, error } = await getSupabaseClient()
     .from('product_reviews')
     .insert([{
       product_id: productId,
@@ -492,7 +496,7 @@ export const updateProductReview = async (
   title: string,
   reviewText: string
 ) => {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabaseClient()
     .from('product_reviews')
     .update({
       rating,
@@ -509,7 +513,7 @@ export const updateProductReview = async (
 };
 
 export const deleteProductReview = async (reviewId: string) => {
-  const { error } = await supabase
+  const { error } = await getSupabaseClient()
     .from('product_reviews')
     .delete()
     .eq('id', reviewId);
@@ -522,7 +526,7 @@ export const getUserReviewForProduct = async (productId: string): Promise<Produc
   const user = await getCurrentUser();
   if (!user) return null;
   
-  const { data, error } = await supabase
+  const { data, error } = await getSupabaseClient()
     .from('product_reviews')
     .select('*')
     .eq('product_id', productId)
@@ -534,14 +538,11 @@ export const getUserReviewForProduct = async (productId: string): Promise<Produc
 };
 
 export const markReviewHelpful = async (reviewId: string) => {
-  const { error } = await supabase.rpc('increment_helpful_count', { review_id: reviewId });
+  const { error } = await getSupabaseClient().rpc('increment_helpful_count', { review_id: reviewId });
   if (error) throw error;
   return true;
 };
 
-// --- Order Methods ---
-
-// Generate unique order number
 const generateOrderNumber = (): string => {
   const date = new Date();
   const dateStr = date.toISOString().slice(0, 10).replace(/-/g, '');
@@ -549,7 +550,6 @@ const generateOrderNumber = (): string => {
   return `DNV-${dateStr}-${random}`;
 };
 
-// Create a new order
 export const createOrder = async (
   cartItems: CartItem[],
   formData: CheckoutFormData,
@@ -562,8 +562,7 @@ export const createOrder = async (
   const orderNumber = generateOrderNumber();
   const total = subtotal + shippingCost + taxAmount - discountAmount;
 
-  // Insert order
-  const { data: orderData, error: orderError } = await supabase
+  const { data: orderData, error: orderError } = await getSupabaseClient()
     .from('orders')
     .insert([{
       order_number: orderNumber,
@@ -591,7 +590,6 @@ export const createOrder = async (
 
   if (orderError) throw orderError;
 
-  // Insert order items
   const orderItems = cartItems.map(item => ({
     order_id: orderData.id,
     product_id: item.id,
@@ -603,7 +601,7 @@ export const createOrder = async (
     total_price: item.price * item.quantity
   }));
 
-  const { error: itemsError } = await supabase
+  const { error: itemsError } = await getSupabaseClient()
     .from('order_items')
     .insert(orderItems);
 
@@ -612,12 +610,11 @@ export const createOrder = async (
   return orderData;
 };
 
-// Fetch user's orders
 export const fetchUserOrders = async (): Promise<Order[]> => {
   const user = await getCurrentUser();
   if (!user) return [];
 
-  const { data, error } = await supabase
+  const { data, error } = await getSupabaseClient()
     .from('orders')
     .select('*')
     .eq('user_id', user.id)
@@ -630,9 +627,8 @@ export const fetchUserOrders = async (): Promise<Order[]> => {
   return data || [];
 };
 
-// Fetch order by ID
 export const fetchOrderById = async (orderId: string): Promise<Order | null> => {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabaseClient()
     .from('orders')
     .select('*')
     .eq('id', orderId)
@@ -645,9 +641,8 @@ export const fetchOrderById = async (orderId: string): Promise<Order | null> => 
   return data;
 };
 
-// Fetch order by order number
 export const fetchOrderByNumber = async (orderNumber: string): Promise<Order | null> => {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabaseClient()
     .from('orders')
     .select('*')
     .eq('order_number', orderNumber)
@@ -660,9 +655,8 @@ export const fetchOrderByNumber = async (orderNumber: string): Promise<Order | n
   return data;
 };
 
-// Fetch order items
 export const fetchOrderItems = async (orderId: string): Promise<OrderItem[]> => {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabaseClient()
     .from('order_items')
     .select('*')
     .eq('order_id', orderId);
@@ -674,9 +668,8 @@ export const fetchOrderItems = async (orderId: string): Promise<OrderItem[]> => 
   return data || [];
 };
 
-// Update order status (admin)
 export const updateOrderStatus = async (orderId: string, status: Order['status']): Promise<Order | null> => {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabaseClient()
     .from('orders')
     .update({ status, updated_at: new Date().toISOString() })
     .eq('id', orderId)
@@ -687,9 +680,8 @@ export const updateOrderStatus = async (orderId: string, status: Order['status']
   return data;
 };
 
-// Update payment status
 export const updatePaymentStatus = async (orderId: string, paymentStatus: Order['payment_status']): Promise<Order | null> => {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabaseClient()
     .from('orders')
     .update({ payment_status: paymentStatus, updated_at: new Date().toISOString() })
     .eq('id', orderId)
@@ -700,9 +692,8 @@ export const updatePaymentStatus = async (orderId: string, paymentStatus: Order[
   return data;
 };
 
-// Fetch all orders (admin)
 export const fetchAllOrders = async (): Promise<Order[]> => {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabaseClient()
     .from('orders')
     .select('*')
     .order('created_at', { ascending: false });
@@ -714,15 +705,13 @@ export const fetchAllOrders = async (): Promise<Order[]> => {
   return data || [];
 };
 
-// EmailJS Configuration
-const EMAILJS_SERVICE_ID = 'service_25hkwer';
-const EMAILJS_TEMPLATE_ID = 'template_xayr1pr';
-const EMAILJS_PUBLIC_KEY = '3vMFDpsTIZNCA4H8m';
+// EmailJS Configuration from environment variables
+const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+const EMAILJS_PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 
-// Send order confirmation email via EmailJS
 export const sendOrderConfirmationEmail = async (order: Order, items: OrderItem[]): Promise<boolean> => {
   try {
-    // Format items as array of objects for EmailJS template loop
     const ordersArray = items.map(item => ({
       name: `${item.product_name}${item.size ? ` (${item.size})` : ''}`,
       price: `Rs. ${Number(item.total_price).toLocaleString()}`,
@@ -754,7 +743,6 @@ export const sendOrderConfirmationEmail = async (order: Order, items: OrderItem[
       EMAILJS_PUBLIC_KEY
     );
 
-    console.log('📧 Order Confirmation Email sent:', response.status, response.text);
     return true;
   } catch (err) {
     console.error('Error sending email:', err);
@@ -762,7 +750,6 @@ export const sendOrderConfirmationEmail = async (order: Order, items: OrderItem[
   }
 };
 
-// Send order status update email via EmailJS
 export const sendOrderStatusEmail = async (order: Order, newStatus: string): Promise<boolean> => {
   try {
     const statusMessages: Record<string, string> = {
@@ -797,7 +784,6 @@ export const sendOrderStatusEmail = async (order: Order, newStatus: string): Pro
       EMAILJS_PUBLIC_KEY
     );
 
-    console.log('📧 Order Status Email sent:', response.status, response.text);
     return true;
   } catch (err) {
     console.error('Error sending status email:', err);

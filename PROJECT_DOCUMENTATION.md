@@ -28,15 +28,13 @@ TECH STACK:
 - Google Gemini (AI Assistant)
 
 SUPABASE CONFIG:
-- URL: https://aplibkzcysdothjgfqmc.supabase.co
-- Project Ref: aplibkzcysdothjgfqmc
-- Anon Key: sb_publishable_jphwGPd_ZOog9XM5Hka7kA_kk285KuL
+- Project Ref: [CONFIGURED VIA ENV]
 - Admin Email: tzkusman786@gmail.com
 
 EMAILJS CONFIG:
-- Service ID: service_25hkwer
-- Template ID: template_xayr1pr
-- Public Key: 3vMFDpsTIZNCA4H8m
+- Service ID: [CONFIGURED VIA ENV]
+- Template ID: [CONFIGURED VIA ENV]
+- Public Key: [CONFIGURED VIA ENV]
 
 LOCALIZATION:
 - Currency: PKR (Pakistani Rupee) with Rs. prefix
@@ -164,10 +162,10 @@ denivo---premium-clothing/
 
 | Setting | Value |
 |---------|-------|
-| Project URL | `https://aplibkzcysdothjgfqmc.supabase.co` |
-| Project Ref | `aplibkzcysdothjgfqmc` |
+| Project URL | `[CONFIGURED VIA ENV]` |
+| Project Ref | `[CONFIGURED VIA ENV]` |
 | Region | (Your region) |
-| Anon Key | `sb_publishable_jphwGPd_ZOog9XM5Hka7kA_kk285KuL` |
+| Anon Key | `[CONFIGURED VIA ENV]` |
 
 ### Authentication Settings
 
@@ -372,9 +370,9 @@ CREATE INDEX IF NOT EXISTS idx_order_items_order_id ON order_items(order_id);
 
 | Setting | Value |
 |---------|-------|
-| Service ID | `service_25hkwer` |
-| Template ID | `template_xayr1pr` |
-| Public Key | `3vMFDpsTIZNCA4H8m` |
+| Service ID | `[CONFIGURED VIA ENV]` |
+| Template ID | `[CONFIGURED VIA ENV]` |
+| Public Key | `[CONFIGURED VIA ENV]` |
 
 ### Template Variables
 
@@ -520,16 +518,18 @@ Open http://localhost:3000
 
 ## 🔐 Environment Variables
 
-Currently hardcoded in source (for simplicity). For production, use:
+Create a `.env` file in the root directory with:
 
 ```env
-VITE_SUPABASE_URL=https://aplibkzcysdothjgfqmc.supabase.co
-VITE_SUPABASE_ANON_KEY=your_anon_key
-VITE_GEMINI_API_KEY=your_gemini_key
-VITE_EMAILJS_SERVICE_ID=service_25hkwer
-VITE_EMAILJS_TEMPLATE_ID=template_xayr1pr
-VITE_EMAILJS_PUBLIC_KEY=3vMFDpsTIZNCA4H8m
+VITE_SUPABASE_URL=your_supabase_url_here
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key_here
+VITE_GEMINI_API_KEY=your_gemini_api_key_here
+VITE_EMAILJS_SERVICE_ID=your_emailjs_service_id_here
+VITE_EMAILJS_TEMPLATE_ID=your_emailjs_template_id_here
+VITE_EMAILJS_PUBLIC_KEY=your_emailjs_public_key_here
 ```
+
+**Note:** Never commit your `.env` file to version control. The `.env.example` file is provided as a template.
 
 ---
 
@@ -835,9 +835,9 @@ CREATE POLICY "orders_insert_policy" ON orders FOR INSERT WITH CHECK (true);
 ```typescript
 import emailjs from '@emailjs/browser';
 
-const EMAILJS_SERVICE_ID = 'service_25hkwer';
-const EMAILJS_TEMPLATE_ID = 'template_xayr1pr';
-const EMAILJS_PUBLIC_KEY = '3vMFDpsTIZNCA4H8m';
+const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+const EMAILJS_PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 
 export const sendOrderConfirmationEmail = async (order, items) => {
   const templateParams = {

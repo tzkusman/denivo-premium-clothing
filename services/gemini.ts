@@ -1,12 +1,29 @@
 
 import { GoogleGenAI } from "@google/genai";
 
-// Fixed: Using VITE_ prefixed env var for browser access
-const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY as string });
+// Lazy initialize Gemini AI
+let ai: GoogleGenAI | null = null;
+
+const getGeminiClient = () => {
+  if (!ai) {
+    const apiKey = import.meta.env.VITE_GEMINI_API_KEY as string;
+    if (!apiKey || apiKey === 'your_gemini_api_key_here') {
+      console.warn('Gemini API key not configured');
+      return null;
+    }
+    ai = new GoogleGenAI({ apiKey });
+  }
+  return ai;
+};
 
 export const getFashionAdvice = async (userPrompt: string, products: any[]) => {
   try {
-    const response = await ai.models.generateContent({
+    const client = getGeminiClient();
+    if (!client) {
+      return "The fashion assistant is not configured. Please set up your Gemini API key.";
+    }
+    
+    const response = await client.models.generateContent({
       model: 'gemini-3-flash-preview',
       contents: [
         {
@@ -23,7 +40,6 @@ export const getFashionAdvice = async (userPrompt: string, products: any[]) => {
         systemInstruction: "You are a sophisticated, helpful fashion expert for the Denivo brand. Your tone is elegant and knowledgeable."
       }
     });
-    // Fixed: response.text is a property, used correctly here
     return response.text || "I'm sorry, I couldn't process that fashion request right now.";
   } catch (error) {
     console.error('Gemini error:', error);
