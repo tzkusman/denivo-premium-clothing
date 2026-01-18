@@ -1,9 +1,10 @@
-# DENIVO Premium Clothing - Complete Project Documentation
+# ZARQ Premium Denim & Fashion - Complete Project Documentation
 
-> **Last Updated:** January 16, 2026  
+> **Last Updated:** January 18, 2026  
 > **Developer:** Usman Shaik (tzkusman786@gmail.com)  
-> **Live Site:** https://denivo-premium-clothing.vercel.app  
-> **GitHub:** https://github.com/tzkusman/denivo-premium-clothing
+> **Live Site:** https://zarq-lovat.vercel.app  
+> **GitHub:** https://github.com/tzkusman/denivo-premium-clothing  
+> **Brand Name:** ZARQ (Live) | DENIVO (GitHub repo name)
 
 ---
 
@@ -12,29 +13,36 @@
 **Copy and paste this at the start of any new AI session to restore full context:**
 
 ```
-I'm continuing work on the DENIVO Premium Clothing e-commerce project. Here's the context:
+I'm continuing work on the ZARQ Premium Denim e-commerce project. Here's the context:
 
-PROJECT: DENIVO - Premium Clothing E-commerce Store
+PROJECT: ZARQ - Premium Denim & Fashion E-commerce Store
+BRAND: ZARQ (meaning "blue" - denim focused brand)
 DEVELOPER: Usman Shaik (tzkusman786@gmail.com)
-LIVE SITE: https://denivo-premium-clothing.vercel.app
+LIVE SITE: https://zarq-lovat.vercel.app
 GITHUB: https://github.com/tzkusman/denivo-premium-clothing
+LOCAL PATH: D:\ZARQ\zarq
 
 TECH STACK:
 - React 19 + TypeScript + Vite
-- Supabase (Database, Auth)
+- Supabase (Database, Auth) - Project: aplibkzcysdothjgfqmc
 - EmailJS (Email notifications)
-- Tailwind CSS (Styling)
+- Tailwind CSS (Styling - Blue Denim Theme)
 - Lucide React (Icons)
-- Google Gemini (AI Assistant)
+- Google Gemini (AI Style Assistant)
 
-SUPABASE CONFIG:
-- Project Ref: [CONFIGURED VIA ENV]
-- Admin Email: tzkusman786@gmail.com
+THEME:
+- Primary Color: Blue (denim-inspired)
+- Brand Colors: blue-600, blue-700, blue-900, slate tones
+- Original DENIVO theme backed up in /backup_theme folder
+- Restore script: restore_denivo_theme.bat
 
-EMAILJS CONFIG:
-- Service ID: [CONFIGURED VIA ENV]
-- Template ID: [CONFIGURED VIA ENV]
-- Public Key: [CONFIGURED VIA ENV]
+ENVIRONMENT VARIABLES (in .env):
+- VITE_SUPABASE_URL
+- VITE_SUPABASE_ANON_KEY
+- VITE_GEMINI_API_KEY
+- VITE_EMAILJS_SERVICE_ID
+- VITE_EMAILJS_TEMPLATE_ID
+- VITE_EMAILJS_PUBLIC_KEY
 
 LOCALIZATION:
 - Currency: PKR (Pakistani Rupee) with Rs. prefix
@@ -43,12 +51,16 @@ LOCALIZATION:
 - Shipping: Rs. 500 flat rate, FREE over Rs. 50,000
 
 KEY FILES:
+- App.tsx - Main app with routing, hero images, cart
 - services/supabase.ts - All Supabase & EmailJS functions
+- services/gemini.ts - AI style assistant (ZARQ branded)
 - components/AdminPanel.tsx - Admin dashboard (Products & Orders)
 - components/CheckoutPage.tsx - 3-step checkout with invoice
-- types.ts - All TypeScript types, PAKISTAN_PROVINCES, PAKISTAN_CITIES, formatPKR()
+- components/Navbar.tsx - Navigation with blue theme
+- types.ts - TypeScript types, PAKISTAN_PROVINCES, PAKISTAN_CITIES, formatPKR()
 
 FEATURES COMPLETED:
+- Blue denim theme throughout
 - Product catalog with categories (Men, Women, Accessories)
 - Shopping cart with guest checkout
 - 3-step checkout (Shipping → Payment → Confirm)
@@ -60,11 +72,17 @@ FEATURES COMPLETED:
 - Automatic email on status updates from admin
 - Pakistan provinces/cities dropdowns
 - PKR currency throughout
+- AI Style Assistant (Gemini-powered)
+- API keys secured via environment variables
 
 DATABASE TABLES:
 - products, product_images, product_sizes, product_details, bulk_pricing
 - product_reviews
 - orders, order_items
+
+BACKUP:
+- Original DENIVO theme saved in /backup_theme folder
+- Run restore_denivo_theme.bat to revert if needed
 
 Please read PROJECT_DOCUMENTATION.md in the repo for complete details.
 ```
@@ -90,15 +108,16 @@ Please read PROJECT_DOCUMENTATION.md in the repo for complete details.
 
 ## 🎯 Project Overview
 
-DENIVO is a premium e-commerce clothing store built with React, TypeScript, and Supabase. It features:
+ZARQ is a premium denim-focused e-commerce fashion store built with React, TypeScript, and Supabase. The name "ZARQ" means "blue" - reflecting the brand's denim focus. It features:
 
+- Blue denim-inspired theme throughout
 - Modern, responsive UI with Tailwind CSS
 - Product catalog with categories (Men, Women, Accessories)
 - Shopping cart with guest checkout
 - Multi-step checkout process
 - Cash on Delivery (COD) and Online Payment options
 - Admin panel for product and order management
-- AI-powered style assistant (Gemini)
+- AI-powered style assistant (Gemini - ZARQ Personal Stylist)
 - Automatic email notifications via EmailJS
 - Invoice generation with print/download
 - Pakistan-focused (PKR currency, Pakistan provinces/cities)
@@ -996,6 +1015,68 @@ The AI helped with:
 - Writing documentation
 
 For any questions, contact: tzkusman786@gmail.com
+
+---
+
+## 📅 Development Session Log
+
+### January 18, 2026 - ZARQ Rebrand & Security Hardening
+
+**Major Changes Completed:**
+
+1. **Security Hardening (API Keys)**
+   - Removed all hardcoded API keys from source files
+   - Moved credentials to `.env` file (not committed to Git)
+   - Updated `.gitignore` to exclude `.env` files
+   - Removed console.log statements that were printing credentials
+   - Created `SECURITY_SETUP.md` documentation for environment variables
+
+2. **Brand Rebrand: DENIVO → ZARQ**
+   - Changed project name to "ZARQ" (meaning "blue" in Arabic - denim focused)
+   - Updated all components with ZARQ branding
+   - Updated page title to "ZARQ | Premium Denim & Fashion"
+   - Updated AI assistant to "ZARQ Personal Stylist"
+
+3. **Blue Denim Theme Applied**
+   - Changed primary color scheme from zinc/gray to blue/slate
+   - Updated all button colors (blue-600, blue-700)
+   - Updated background gradients to blue tones
+   - Updated scrollbar to blue theme
+   - Updated footer and all components for consistency
+   - Added denim texture CSS pattern
+
+4. **Backup Created**
+   - Original DENIVO theme saved in `/backup_theme/` folder
+   - Contains: App.tsx, Navbar.tsx, all component files, index.html
+   - Created `restore_denivo_theme.bat` script for easy restoration
+   - Can revert to original theme by running the batch script
+
+5. **Files Modified:**
+   - `index.html` - ZARQ title, blue scrollbar, denim CSS
+   - `App.tsx` - Blue gradients, ZARQ branding, hero images
+   - `Navbar.tsx` - ZARQ logo, blue navigation theme
+   - `services/gemini.ts` - ZARQ Personal Stylist branding
+   - `services/supabase.ts` - Removed console.logs, env variables only
+   - All components in `/components/` - zinc→blue color changes
+   - `.gitignore` - Added .env exclusion
+   - `.env` - Added all 6 required environment variables
+
+6. **Deployment:**
+   - Built and deployed to Vercel
+   - Live at: https://zarq-lovat.vercel.app
+   - All environment variables configured in Vercel dashboard
+
+7. **GitHub:**
+   - Pushed commit: "ZARQ Rebrand: Blue denim theme, secure API keys, backup included"
+   - Repository: https://github.com/tzkusman/denivo-premium-clothing
+
+**To Restore Original DENIVO Theme:**
+```bash
+# Run the batch script
+restore_denivo_theme.bat
+
+# Or manually copy files from backup_theme folder
+```
 
 ---
 
