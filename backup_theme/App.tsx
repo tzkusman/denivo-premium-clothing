@@ -116,29 +116,29 @@ const App: React.FC = () => {
 
   if (loading && products.length === 0) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
-        <h1 className="text-4xl font-display font-bold text-blue-900 mb-8 animate-pulse">ZARQ</h1>
-        <Loader2 className="animate-spin text-blue-600" size={32} />
+      <div className="min-h-screen flex flex-col items-center justify-center bg-white">
+        <h1 className="text-4xl font-display font-bold text-zinc-900 mb-8 animate-pulse">DENIVO</h1>
+        <Loader2 className="animate-spin text-zinc-900" size={32} />
       </div>
     );
   }
 
   const heroImages = {
-    home: "https://images.unsplash.com/photo-1542272604-787c3835535d?q=80&w=2026&auto=format&fit=crop",
+    home: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=2070&auto=format&fit=crop",
     men: "https://images.unsplash.com/photo-1488161628813-04466f872be2?q=80&w=2000&auto=format&fit=crop",
     women: "https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=2070&auto=format&fit=crop",
     admin: "https://images.unsplash.com/photo-1556740758-90de374c12ad?q=80&w=2070&auto=format&fit=crop"
   };
 
   const heroTitles = {
-    home: "Denim Redefined",
-    men: "Bold & Timeless",
-    women: "Effortless Style",
-    admin: "Command Center"
+    home: "The New Evolution",
+    men: "The Modern Gentleman",
+    women: "Contemporary Elegance",
+    admin: "Inventory Control"
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-blue-50 text-slate-900 selection:bg-blue-600 selection:text-white">
+    <div className="min-h-screen bg-white text-zinc-900 selection:bg-zinc-900 selection:text-white">
       <Navbar 
         cartCount={cart.reduce((s, i) => s + i.quantity, 0)} 
         onOpenCart={() => setIsCartOpen(true)}
@@ -160,16 +160,16 @@ const App: React.FC = () => {
                 alt="Hero Fashion" 
                 className="absolute inset-0 w-full h-full object-cover transition-all duration-1000 ease-in-out"
               />
-              <div className="absolute inset-0 bg-gradient-to-b from-blue-900/30 via-transparent to-blue-900/70 flex flex-col items-center justify-end pb-20 px-4 text-center">
+              <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/60 flex flex-col items-center justify-end pb-20 px-4 text-center">
                 <h2 className="text-white text-sm uppercase tracking-[0.3em] font-medium mb-4 drop-shadow-md">
-                  {view === 'home' ? 'Premium Denim Collection' : `${view.toUpperCase()} EXCLUSIVE`}
+                  {view === 'home' ? 'Autumn / Winter Collection' : `${view.toUpperCase()} EXCLUSIVE`}
                 </h2>
                 <h1 className="text-white text-5xl md:text-8xl font-display font-bold mb-8 drop-shadow-lg">
                   {heroTitles[view]}
                 </h1>
                 <button 
                   onClick={handleHeroAction}
-                  className="bg-white text-blue-900 px-8 py-4 rounded-full font-bold flex items-center space-x-2 hover:bg-blue-50 transition-all shadow-2xl border-2 border-blue-200"
+                  className="bg-white text-zinc-900 px-8 py-4 rounded-full font-bold flex items-center space-x-2 hover:bg-zinc-100 transition-all shadow-2xl"
                 >
                   <span>Explore Collection</span>
                   <ArrowRight size={20} />
@@ -181,28 +181,28 @@ const App: React.FC = () => {
             <section id="collection-header" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
               <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-4">
                 <div>
-                  <span className="text-blue-500 text-xs font-bold uppercase tracking-widest mb-2 block">
+                  <span className="text-zinc-400 text-xs font-bold uppercase tracking-widest mb-2 block">
                     {view === 'home' ? 'Latest Arrivals' : `${view} Selection`}
                   </span>
-                  <h2 className="text-4xl font-display font-bold text-slate-900">
+                  <h2 className="text-4xl font-display font-bold text-zinc-900">
                     {view === 'home' ? 'Featured Curations' : `${view.charAt(0).toUpperCase() + view.slice(1)}'s Wardrobe`}
                   </h2>
                 </div>
-                <div className="flex space-x-8 text-sm font-medium border-b border-blue-100 pb-2 overflow-x-auto whitespace-nowrap">
-                  <button onClick={() => setView('home')} className={`pb-2 ${view === 'home' ? 'text-blue-700 border-b-2 border-blue-600' : 'text-slate-400 hover:text-blue-600 transition-colors'}`}>All Items</button>
-                  <button onClick={() => setView('men')} className={`pb-2 ${view === 'men' ? 'text-blue-700 border-b-2 border-blue-600' : 'text-slate-400 hover:text-blue-600 transition-colors'}`}>Men</button>
-                  <button onClick={() => setView('women')} className={`pb-2 ${view === 'women' ? 'text-blue-700 border-b-2 border-blue-600' : 'text-slate-400 hover:text-blue-600 transition-colors'}`}>Women</button>
+                <div className="flex space-x-8 text-sm font-medium border-b border-zinc-100 pb-2 overflow-x-auto whitespace-nowrap">
+                  <button onClick={() => setView('home')} className={`pb-2 ${view === 'home' ? 'text-zinc-900 border-b-2 border-zinc-900' : 'text-zinc-400 hover:text-zinc-600 transition-colors'}`}>All Items</button>
+                  <button onClick={() => setView('men')} className={`pb-2 ${view === 'men' ? 'text-zinc-900 border-b-2 border-zinc-900' : 'text-zinc-400 hover:text-zinc-600 transition-colors'}`}>Men</button>
+                  <button onClick={() => setView('women')} className={`pb-2 ${view === 'women' ? 'text-zinc-900 border-b-2 border-zinc-900' : 'text-zinc-400 hover:text-zinc-600 transition-colors'}`}>Women</button>
                 </div>
               </div>
 
               {loading ? (
                 <div className="flex justify-center py-32">
-                  <Loader2 className="animate-spin text-blue-400" size={48} />
+                  <Loader2 className="animate-spin text-zinc-300" size={48} />
                 </div>
               ) : products.length === 0 ? (
-                <div className="text-center py-32 bg-blue-50 rounded-3xl border-2 border-dashed border-blue-200">
-                  <h3 className="text-xl font-bold text-slate-900 mb-2">No Items Found</h3>
-                  <p className="text-slate-500 max-w-xs mx-auto">Our {view} collection is currently being updated.</p>
+                <div className="text-center py-32 bg-zinc-50 rounded-3xl border-2 border-dashed border-zinc-200">
+                  <h3 className="text-xl font-bold text-zinc-900 mb-2">No Items Found</h3>
+                  <p className="text-zinc-500 max-w-xs mx-auto">Our {view} collection is currently being updated.</p>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-16">
@@ -222,51 +222,51 @@ const App: React.FC = () => {
         )}
 
         {/* Benefits Section */}
-        <section className="py-24 bg-gradient-to-r from-blue-50 via-indigo-50 to-blue-50">
+        <section className="py-24 bg-zinc-50">
           <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-12">
             {[
-              { title: 'Free Shipping', desc: 'Complimentary delivery on orders over Rs. 50,000 across Pakistan.' },
-              { title: 'Premium Quality', desc: 'Authentic denim crafted with attention to every detail.' },
-              { title: 'Style Assistant', desc: 'Access our AI-powered stylist for personalized advice.' },
+              { title: 'Global Delivery', desc: 'Complimentary shipping on orders over $500 with insurance.' },
+              { title: 'Secure Transactions', desc: 'Enterprise grade security for every purchase you make.' },
+              { title: 'Personal Stylist', desc: 'Access our AI-powered stylist for advice anytime.' },
             ].map((b, i) => (
               <div key={i} className="text-center group">
-                <div className="w-12 h-1 px-4 bg-blue-300 mx-auto mb-6 group-hover:bg-blue-600 transition-colors duration-500" />
-                <h3 className="text-lg font-bold mb-3 uppercase tracking-widest text-slate-800">{b.title}</h3>
-                <p className="text-slate-500 text-sm leading-relaxed">{b.desc}</p>
+                <div className="w-12 h-1 px-4 bg-zinc-300 mx-auto mb-6 group-hover:bg-zinc-900 transition-colors duration-500" />
+                <h3 className="text-lg font-bold mb-3 uppercase tracking-widest">{b.title}</h3>
+                <p className="text-zinc-500 text-sm leading-relaxed">{b.desc}</p>
               </div>
             ))}
           </div>
         </section>
       </main>
 
-      <footer className="bg-gradient-to-b from-slate-900 to-blue-950 text-white py-16">
+      <footer className="bg-white border-t border-zinc-100 py-16">
         <div className="max-w-7xl mx-auto px-4 grid grid-cols-2 lg:grid-cols-4 gap-12">
           <div className="col-span-2 lg:col-span-1">
-            <h2 className="text-2xl font-display font-bold mb-6 text-blue-300">ZARQ</h2>
-            <p className="text-blue-200/70 text-sm mb-6 leading-relaxed">Premium denim and fashion, crafted for those who appreciate quality and timeless style. Established 2024.</p>
+            <h2 className="text-2xl font-display font-bold mb-6">DENIVO</h2>
+            <p className="text-zinc-500 text-sm mb-6 leading-relaxed">Redefining modern elegance through timeless designs and sustainable practices. Established 2024.</p>
           </div>
           <div>
-            <h4 className="font-bold text-xs uppercase tracking-[0.2em] mb-6 text-blue-300">Shop</h4>
-            <ul className="space-y-3 text-sm text-blue-200/70">
-              <li><button onClick={() => setView('home')} className="hover:text-white transition-colors text-left">New Arrivals</button></li>
-              <li><button onClick={() => setView('men')} className="hover:text-white transition-colors text-left">Men</button></li>
-              <li><button onClick={() => setView('women')} className="hover:text-white transition-colors text-left">Women</button></li>
+            <h4 className="font-bold text-xs uppercase tracking-[0.2em] mb-6">Shop</h4>
+            <ul className="space-y-3 text-sm text-zinc-500">
+              <li><button onClick={() => setView('home')} className="hover:text-zinc-900 transition-colors text-left">New Arrivals</button></li>
+              <li><button onClick={() => setView('men')} className="hover:text-zinc-900 transition-colors text-left">Men</button></li>
+              <li><button onClick={() => setView('women')} className="hover:text-zinc-900 transition-colors text-left">Women</button></li>
             </ul>
           </div>
           <div>
-            <h4 className="font-bold text-xs uppercase tracking-[0.2em] mb-6 text-blue-300">Company</h4>
-            <ul className="space-y-3 text-sm text-blue-200/70">
-              <li><a href="#" className="hover:text-white transition-colors">About ZARQ</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Journal</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Careers</a></li>
+            <h4 className="font-bold text-xs uppercase tracking-[0.2em] mb-6">Company</h4>
+            <ul className="space-y-3 text-sm text-zinc-500">
+              <li><a href="#" className="hover:text-zinc-900 transition-colors">About Denivo</a></li>
+              <li><a href="#" className="hover:text-zinc-900 transition-colors">Journal</a></li>
+              <li><a href="#" className="hover:text-zinc-900 transition-colors">Careers</a></li>
             </ul>
           </div>
           <div>
-            <h4 className="font-bold text-xs uppercase tracking-[0.2em] mb-6 text-blue-300">Stay Inspired</h4>
-            <p className="text-blue-200/70 text-sm mb-4">Subscribe to our newsletter for exclusive collections.</p>
+            <h4 className="font-bold text-xs uppercase tracking-[0.2em] mb-6">Stay Inspired</h4>
+            <p className="text-zinc-500 text-sm mb-4">Subscribe to our newsletter for exclusive collections.</p>
             <div className="flex">
-              <input type="email" placeholder="Email address" className="bg-blue-900/50 border border-blue-700 px-4 py-3 flex-1 text-sm outline-none focus:ring-1 focus:ring-blue-400 text-white placeholder:text-blue-300/50" />
-              <button className="bg-blue-600 text-white px-6 py-3 text-xs font-bold uppercase tracking-widest hover:bg-blue-500 transition-colors">Join</button>
+              <input type="email" placeholder="Email address" className="bg-zinc-100 px-4 py-3 flex-1 text-sm outline-none focus:ring-1 focus:ring-zinc-900" />
+              <button className="bg-zinc-900 text-white px-6 py-3 text-xs font-bold uppercase tracking-widest hover:bg-zinc-800 transition-colors">Join</button>
             </div>
           </div>
         </div>

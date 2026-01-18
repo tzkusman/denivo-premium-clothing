@@ -29,7 +29,7 @@ export const getFashionAdvice = async (userPrompt: string, products: any[]) => {
         {
           role: 'user',
           parts: [{
-            text: `You are the Denivo Personal Stylist. Denivo is a luxury clothing brand. 
+            text: `You are the ZARQ Personal Stylist. ZARQ is a premium denim and fashion brand known for quality and style. 
             Suggest products from our catalog based on the user's request. 
             Catalog: ${JSON.stringify(products.map(p => ({ name: p.name, price: p.price, desc: p.description })))}
             User Request: ${userPrompt}`
@@ -37,7 +37,7 @@ export const getFashionAdvice = async (userPrompt: string, products: any[]) => {
         }
       ],
       config: {
-        systemInstruction: "You are a sophisticated, helpful fashion expert for the Denivo brand. Your tone is elegant and knowledgeable."
+        systemInstruction: "You are a sophisticated, helpful fashion expert for the ZARQ brand. Your tone is friendly, stylish, and knowledgeable about denim fashion."
       }
     });
     return response.text || "I'm sorry, I couldn't process that fashion request right now.";

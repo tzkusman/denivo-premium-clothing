@@ -57,21 +57,21 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   if (success) {
     return (
       <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" onClick={(e) => e.stopPropagation()}>
-        <div className="absolute inset-0 bg-blue-600/60 backdrop-blur-md" onClick={(e) => { e.stopPropagation(); onClose(); }} />
+        <div className="absolute inset-0 bg-zinc-900/60 backdrop-blur-md" onClick={(e) => { e.stopPropagation(); onClose(); }} />
         <div className="relative bg-white w-full max-w-[440px] rounded-[2rem] shadow-2xl overflow-hidden p-12 text-center animate-in zoom-in-95 duration-300" onClick={(e) => e.stopPropagation()}>
           <div className="mb-6 flex justify-center">
             <div className="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center">
               <CheckCircle2 className="text-green-500" size={40} />
             </div>
           </div>
-          <h2 className="text-3xl font-display font-bold text-slate-900 mb-4">Check Your Inbox</h2>
-          <p className="text-slate-500 text-sm mb-8 leading-relaxed">
-            We've sent a verification link to <span className="font-bold text-slate-900">{email}</span>. 
-            Please confirm your email to activate your account and access ZARQ.
+          <h2 className="text-3xl font-display font-bold text-zinc-900 mb-4">Check Your Inbox</h2>
+          <p className="text-zinc-500 text-sm mb-8 leading-relaxed">
+            We've sent a verification link to <span className="font-bold text-zinc-900">{email}</span>. 
+            Please confirm your email to activate your account and access Denivo.
           </p>
           <button
             onClick={(e) => { e.stopPropagation(); onClose(); }}
-            className="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold hover:bg-blue-700 transition-all uppercase tracking-widest text-xs"
+            className="w-full bg-zinc-900 text-white py-4 rounded-2xl font-bold hover:bg-zinc-800 transition-all uppercase tracking-widest text-xs"
           >
             Got it
           </button>
@@ -82,41 +82,41 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" onClick={(e) => e.stopPropagation()}>
-      <div className="absolute inset-0 bg-blue-600/60 backdrop-blur-md transition-all duration-500" onClick={(e) => { e.stopPropagation(); onClose(); }} />
+      <div className="absolute inset-0 bg-zinc-900/60 backdrop-blur-md transition-all duration-500" onClick={(e) => { e.stopPropagation(); onClose(); }} />
       <div className="relative bg-white w-full max-w-[440px] rounded-[2rem] shadow-[0_32px_64px_-12px_rgba(0,0,0,0.14)] overflow-hidden animate-in fade-in zoom-in-95 duration-300" onClick={(e) => e.stopPropagation()}>
         
         <div className="h-2 bg-gradient-to-r from-zinc-100 via-zinc-900 to-zinc-100" />
         
         <button 
           onClick={(e) => { e.stopPropagation(); onClose(); }}
-          className="absolute top-6 right-6 p-2 hover:bg-blue-100 rounded-full transition-all text-slate-400 hover:text-slate-900 z-10"
+          className="absolute top-6 right-6 p-2 hover:bg-zinc-100 rounded-full transition-all text-zinc-400 hover:text-zinc-900 z-10"
         >
           <X size={20} />
         </button>
 
         <div className="p-10 md:p-12">
           <div className="text-center mb-10">
-            <h2 className="text-4xl font-display font-bold text-slate-900 mb-3 tracking-tight">
+            <h2 className="text-4xl font-display font-bold text-zinc-900 mb-3 tracking-tight">
               {isLogin ? 'Welcome Back' : 'Create Account'}
             </h2>
-            <p className="text-slate-500 text-sm leading-relaxed max-w-[280px] mx-auto">
+            <p className="text-zinc-500 text-sm leading-relaxed max-w-[280px] mx-auto">
               {isLogin 
                 ? 'Sign in to access your curated wardrobe and orders.' 
-                : 'Join ZARQ to discover personalized luxury and style advice.'}
+                : 'Join Denivo to discover personalized luxury and style advice.'}
             </p>
           </div>
 
           <form onSubmit={handleSubmit} onClick={(e) => e.stopPropagation()} className="space-y-5">
             {!isLogin && (
               <div className="group">
-                <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 mb-2 ml-1">Full Name</label>
+                <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400 mb-2 ml-1">Full Name</label>
                 <div className="relative">
-                  <UserIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-300 group-focus-within:text-slate-900 transition-colors" size={18} />
+                  <UserIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-300 group-focus-within:text-zinc-900 transition-colors" size={18} />
                   <input
                     type="text"
                     required
                     placeholder="E.g. Alexander McQueen"
-                    className="w-full pl-12 pr-4 py-4 bg-blue-50 border border-blue-100 rounded-2xl text-sm focus:outline-none focus:ring-4 focus:ring-zinc-900/5 focus:border-blue-200 transition-all placeholder:text-zinc-300"
+                    className="w-full pl-12 pr-4 py-4 bg-zinc-50 border border-zinc-100 rounded-2xl text-sm focus:outline-none focus:ring-4 focus:ring-zinc-900/5 focus:border-zinc-200 transition-all placeholder:text-zinc-300"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                   />
@@ -125,14 +125,14 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
             )}
 
             <div className="group">
-              <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 mb-2 ml-1">Email Address</label>
+              <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400 mb-2 ml-1">Email Address</label>
               <div className="relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-300 group-focus-within:text-slate-900 transition-colors" size={18} />
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-300 group-focus-within:text-zinc-900 transition-colors" size={18} />
                 <input
                   type="email"
                   required
                   placeholder="name@example.com"
-                  className="w-full pl-12 pr-4 py-4 bg-blue-50 border border-blue-100 rounded-2xl text-sm focus:outline-none focus:ring-4 focus:ring-zinc-900/5 focus:border-blue-200 transition-all placeholder:text-zinc-300"
+                  className="w-full pl-12 pr-4 py-4 bg-zinc-50 border border-zinc-100 rounded-2xl text-sm focus:outline-none focus:ring-4 focus:ring-zinc-900/5 focus:border-zinc-200 transition-all placeholder:text-zinc-300"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
@@ -140,14 +140,14 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
             </div>
 
             <div className="group">
-              <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 mb-2 ml-1">Password</label>
+              <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400 mb-2 ml-1">Password</label>
               <div className="relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-300 group-focus-within:text-slate-900 transition-colors" size={18} />
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-300 group-focus-within:text-zinc-900 transition-colors" size={18} />
                 <input
                   type="password"
                   required
                   placeholder="Min. 6 characters"
-                  className="w-full pl-12 pr-4 py-4 bg-blue-50 border border-blue-100 rounded-2xl text-sm focus:outline-none focus:ring-4 focus:ring-zinc-900/5 focus:border-blue-200 transition-all placeholder:text-zinc-300"
+                  className="w-full pl-12 pr-4 py-4 bg-zinc-50 border border-zinc-100 rounded-2xl text-sm focus:outline-none focus:ring-4 focus:ring-zinc-900/5 focus:border-zinc-200 transition-all placeholder:text-zinc-300"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
@@ -163,7 +163,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-blue-600 text-white py-5 rounded-2xl font-bold hover:bg-blue-700 transition-all flex items-center justify-center space-x-3 disabled:opacity-70 group mt-4 shadow-xl shadow-zinc-900/10 active:scale-[0.98]"
+              className="w-full bg-zinc-900 text-white py-5 rounded-2xl font-bold hover:bg-zinc-800 transition-all flex items-center justify-center space-x-3 disabled:opacity-70 group mt-4 shadow-xl shadow-zinc-900/10 active:scale-[0.98]"
             >
               {loading ? (
                 <Loader2 className="animate-spin" size={20} />
@@ -179,9 +179,9 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
           <div className="mt-10 text-center">
             <button 
               onClick={() => setIsLogin(!isLogin)}
-              className="text-xs text-slate-400 hover:text-slate-900 transition-colors font-semibold uppercase tracking-widest"
+              className="text-xs text-zinc-400 hover:text-zinc-900 transition-colors font-semibold uppercase tracking-widest"
             >
-              {isLogin ? "New to ZARQ? Create account" : "Have an account? Sign in"}
+              {isLogin ? "New to Denivo? Create account" : "Have an account? Sign in"}
             </button>
           </div>
         </div>

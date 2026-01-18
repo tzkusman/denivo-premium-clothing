@@ -25,18 +25,18 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, items, onRem
         <div className="w-screen max-w-md bg-white shadow-2xl flex flex-col">
           <div className="flex-1 overflow-y-auto p-6">
             <div className="flex items-center justify-between mb-8">
-              <h2 className="text-2xl font-display font-bold text-slate-900">Your Bag</h2>
-              <button onClick={onClose} className="p-2 hover:bg-blue-100 rounded-full transition-colors">
+              <h2 className="text-2xl font-display font-bold text-zinc-900">Your Bag</h2>
+              <button onClick={onClose} className="p-2 hover:bg-zinc-100 rounded-full transition-colors">
                 <X size={24} />
               </button>
             </div>
 
             {items.length === 0 ? (
               <div className="text-center py-20">
-                <p className="text-slate-500 mb-4">Your bag is currently empty.</p>
+                <p className="text-zinc-500 mb-4">Your bag is currently empty.</p>
                 <button 
                   onClick={onClose}
-                  className="text-slate-900 font-semibold border-b-2 border-blue-900"
+                  className="text-zinc-900 font-semibold border-b-2 border-zinc-900"
                 >
                   Start Shopping
                 </button>
@@ -44,25 +44,25 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, items, onRem
             ) : (
               <div className="space-y-6">
                 {items.map((item, index) => (
-                  <div key={`${item.id}-${item.selectedSize || index}`} className="flex space-x-4 border-b border-blue-100 pb-6">
+                  <div key={`${item.id}-${item.selectedSize || index}`} className="flex space-x-4 border-b border-zinc-100 pb-6">
                     <img 
                       src={item.image_url || `https://picsum.photos/seed/${item.id}/200/200`} 
                       alt={item.name} 
-                      className="w-20 h-28 object-cover rounded-lg bg-blue-100"
+                      className="w-20 h-28 object-cover rounded-lg bg-zinc-100"
                     />
                     <div className="flex-1 flex flex-col justify-between">
                       <div>
-                        <div className="flex justify-between font-medium text-slate-900 mb-1">
+                        <div className="flex justify-between font-medium text-zinc-900 mb-1">
                           <h4 className="text-sm uppercase tracking-wide">{item.name}</h4>
                           <p className="text-sm">{formatPKR(item.price * item.quantity)}</p>
                         </div>
-                        <p className="text-xs text-slate-500">{item.category}</p>
+                        <p className="text-xs text-zinc-500">{item.category}</p>
                         {item.selectedSize && (
                           <p className="text-xs text-zinc-700 font-medium mt-1">Size: {item.selectedSize}</p>
                         )}
                       </div>
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-3 bg-blue-50 px-2 py-1 rounded-md">
+                        <div className="flex items-center space-x-3 bg-zinc-50 px-2 py-1 rounded-md">
                           <button 
                             onClick={() => onUpdateQuantity(item.id, Math.max(1, item.quantity - 1))}
                             className="text-lg font-medium w-6"
@@ -79,7 +79,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, items, onRem
                         </div>
                         <button 
                           onClick={() => onRemove(item.id)}
-                          className="text-slate-400 hover:text-red-500 transition-colors"
+                          className="text-zinc-400 hover:text-red-500 transition-colors"
                         >
                           <Trash2 size={18} />
                         </button>
@@ -91,7 +91,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, items, onRem
             )}
           </div>
 
-          <div className="border-t border-blue-100 p-6 bg-blue-50">
+          <div className="border-t border-zinc-100 p-6 bg-zinc-50">
             {items.length > 0 && remainingForFreeShipping > 0 && (
               <div className="mb-4 p-3 bg-amber-50 rounded-lg">
                 <p className="text-xs text-amber-700 text-center">
@@ -107,19 +107,19 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, items, onRem
               </div>
             )}
             <div className="flex justify-between items-center mb-6">
-              <span className="text-slate-600 font-medium">Subtotal</span>
-              <span className="text-xl font-bold text-slate-900">{formatPKR(total)}</span>
+              <span className="text-zinc-600 font-medium">Subtotal</span>
+              <span className="text-xl font-bold text-zinc-900">{formatPKR(total)}</span>
             </div>
             <button 
               onClick={onCheckout}
               disabled={items.length === 0}
-              className="w-full bg-blue-600 text-white py-4 rounded-xl font-bold flex items-center justify-center space-x-2 hover:bg-blue-700 transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-zinc-900 text-white py-4 rounded-xl font-bold flex items-center justify-center space-x-2 hover:bg-zinc-800 transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <ShoppingBag size={20} />
               <span>Proceed to Checkout</span>
               <ChevronRight size={20} />
             </button>
-            <p className="text-center text-xs text-slate-400 mt-4 uppercase tracking-widest font-semibold">
+            <p className="text-center text-xs text-zinc-400 mt-4 uppercase tracking-widest font-semibold">
               Secure Checkout • Free Returns
             </p>
           </div>

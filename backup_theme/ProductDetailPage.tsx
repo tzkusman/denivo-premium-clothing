@@ -155,8 +155,8 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ productId, onClos
     return (
       <div className="fixed inset-0 z-[80] bg-white flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="animate-spin mx-auto mb-4 text-slate-900" size={40} />
-          <p className="text-slate-500">Loading product...</p>
+          <Loader2 className="animate-spin mx-auto mb-4 text-zinc-900" size={40} />
+          <p className="text-zinc-500">Loading product...</p>
         </div>
       </div>
     );
@@ -166,8 +166,8 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ productId, onClos
     return (
       <div className="fixed inset-0 z-[80] bg-white flex items-center justify-center">
         <div className="text-center">
-          <p className="text-slate-500 mb-4">Product not found</p>
-          <button onClick={onClose} className="text-slate-900 font-bold underline">Go Back</button>
+          <p className="text-zinc-500 mb-4">Product not found</p>
+          <button onClick={onClose} className="text-zinc-900 font-bold underline">Go Back</button>
         </div>
       </div>
     );
@@ -178,16 +178,16 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ productId, onClos
   return (
     <div className="fixed inset-0 z-[80] bg-white overflow-y-auto">
       {/* Header */}
-      <div className="sticky top-0 z-10 bg-white/90 backdrop-blur-xl border-b border-blue-100">
+      <div className="sticky top-0 z-10 bg-white/90 backdrop-blur-xl border-b border-zinc-100">
         <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
           <button 
             onClick={onClose}
-            className="flex items-center space-x-2 text-slate-600 hover:text-slate-900 transition-colors"
+            className="flex items-center space-x-2 text-zinc-600 hover:text-zinc-900 transition-colors"
           >
             <ChevronLeft size={20} />
             <span className="text-sm font-medium">Back to Collection</span>
           </button>
-          <h1 className="text-xl font-display font-bold tracking-tighter">ZARQ</h1>
+          <h1 className="text-xl font-display font-bold tracking-tighter">DENIVO</h1>
           <div className="w-24" /> {/* Spacer for centering */}
         </div>
       </div>
@@ -204,8 +204,8 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ productId, onClos
                   onClick={() => setSelectedImageIndex(index)}
                   className={`flex-shrink-0 w-16 h-20 lg:w-20 lg:h-24 rounded-lg overflow-hidden border-2 transition-all ${
                     selectedImageIndex === index 
-                      ? 'border-blue-900' 
-                      : 'border-transparent hover:border-blue-300'
+                      ? 'border-zinc-900' 
+                      : 'border-transparent hover:border-zinc-300'
                   }`}
                 >
                   <img src={img} alt="" className="w-full h-full object-cover" />
@@ -214,10 +214,10 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ productId, onClos
             </div>
 
             {/* Main Image */}
-            <div className="flex-1 relative aspect-[3/4] bg-blue-100 rounded-2xl overflow-hidden group">
+            <div className="flex-1 relative aspect-[3/4] bg-zinc-100 rounded-2xl overflow-hidden group">
               {product.details?.is_highly_rated && (
                 <div className="absolute top-4 left-4 z-10 bg-white px-3 py-1.5 rounded-full flex items-center space-x-1.5 shadow-lg">
-                  <Star size={14} className="fill-zinc-900 text-slate-900" />
+                  <Star size={14} className="fill-zinc-900 text-zinc-900" />
                   <span className="text-xs font-bold">Highly Rated</span>
                 </div>
               )}
@@ -257,20 +257,20 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ productId, onClos
 
             {/* Title & Price */}
             <div>
-              <h1 className="text-2xl font-bold text-slate-900 mb-1">{product.name}</h1>
-              <p className="text-slate-500 mb-4">{product.details?.short_description || product.description}</p>
-              <p className="text-2xl font-bold text-slate-900">{formatPKR(product.price)}</p>
+              <h1 className="text-2xl font-bold text-zinc-900 mb-1">{product.name}</h1>
+              <p className="text-zinc-500 mb-4">{product.details?.short_description || product.description}</p>
+              <p className="text-2xl font-bold text-zinc-900">{formatPKR(product.price)}</p>
             </div>
 
             {/* Color Variants */}
             {product.colors.length > 0 && (
               <div>
-                <p className="text-sm font-medium text-slate-900 mb-3">Color</p>
+                <p className="text-sm font-medium text-zinc-900 mb-3">Color</p>
                 <div className="flex gap-2">
                   {product.colors.map(color => (
                     <button
                       key={color.id}
-                      className="w-12 h-12 rounded-lg border-2 border-blue-200 overflow-hidden hover:border-blue-900 transition-all"
+                      className="w-12 h-12 rounded-lg border-2 border-zinc-200 overflow-hidden hover:border-zinc-900 transition-all"
                       title={color.color_name}
                     >
                       {color.image_url ? (
@@ -288,10 +288,10 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ productId, onClos
             {product.sizes.length > 0 && (
               <div>
                 <div className="flex justify-between items-center mb-3">
-                  <p className="text-sm font-medium text-slate-900">Select Size</p>
+                  <p className="text-sm font-medium text-zinc-900">Select Size</p>
                   <button 
                     onClick={() => setShowSizeGuide(true)}
-                    className="text-sm text-slate-500 hover:text-slate-900 flex items-center space-x-1 transition-colors"
+                    className="text-sm text-zinc-500 hover:text-zinc-900 flex items-center space-x-1 transition-colors"
                   >
                     <Ruler size={14} />
                     <span>Size Guide</span>
@@ -305,10 +305,10 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ productId, onClos
                       onClick={() => setSelectedSize(size.size_value)}
                       className={`py-3 px-4 rounded-lg border text-sm font-medium transition-all ${
                         selectedSize === size.size_value
-                          ? 'border-blue-900 bg-blue-600 text-white'
+                          ? 'border-zinc-900 bg-zinc-900 text-white'
                           : size.is_available && size.stock > 0
-                            ? 'border-blue-200 hover:border-blue-900 text-slate-900'
-                            : 'border-blue-100 bg-blue-50 text-zinc-300 cursor-not-allowed line-through'
+                            ? 'border-zinc-200 hover:border-zinc-900 text-zinc-900'
+                            : 'border-zinc-100 bg-zinc-50 text-zinc-300 cursor-not-allowed line-through'
                       }`}
                     >
                       {size.size_label}
@@ -322,10 +322,10 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ productId, onClos
             {product.sizes.length === 0 && (
               <div>
                 <div className="flex justify-between items-center mb-3">
-                  <p className="text-sm font-medium text-slate-900">Select Size</p>
+                  <p className="text-sm font-medium text-zinc-900">Select Size</p>
                   <button 
                     onClick={() => setShowSizeGuide(true)}
-                    className="text-sm text-slate-500 hover:text-slate-900 flex items-center space-x-1 transition-colors"
+                    className="text-sm text-zinc-500 hover:text-zinc-900 flex items-center space-x-1 transition-colors"
                   >
                     <Ruler size={14} />
                     <span>Size Guide</span>
@@ -338,8 +338,8 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ productId, onClos
                       onClick={() => setSelectedSize(size)}
                       className={`py-3 px-4 rounded-lg border text-sm font-medium transition-all ${
                         selectedSize === size
-                          ? 'border-blue-900 bg-blue-600 text-white'
-                          : 'border-blue-200 hover:border-blue-900 text-slate-900'
+                          ? 'border-zinc-900 bg-zinc-900 text-white'
+                          : 'border-zinc-200 hover:border-zinc-900 text-zinc-900'
                       }`}
                     >
                       {size}
@@ -351,24 +351,24 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ productId, onClos
 
             {/* Quantity */}
             <div>
-              <p className="text-sm font-medium text-slate-900 mb-3">Quantity</p>
+              <p className="text-sm font-medium text-zinc-900 mb-3">Quantity</p>
               <div className="flex items-center space-x-4">
-                <div className="flex items-center border border-blue-200 rounded-lg">
+                <div className="flex items-center border border-zinc-200 rounded-lg">
                   <button
                     onClick={() => setQuantity(q => Math.max(1, q - 1))}
-                    className="p-3 hover:bg-blue-50 transition-colors"
+                    className="p-3 hover:bg-zinc-50 transition-colors"
                   >
                     <Minus size={16} />
                   </button>
                   <span className="px-6 py-3 font-medium">{quantity}</span>
                   <button
                     onClick={() => setQuantity(q => q + 1)}
-                    className="p-3 hover:bg-blue-50 transition-colors"
+                    className="p-3 hover:bg-zinc-50 transition-colors"
                   >
                     <Plus size={16} />
                   </button>
                 </div>
-                <p className="text-sm text-slate-500">{product.stock} in stock</p>
+                <p className="text-sm text-zinc-500">{product.stock} in stock</p>
               </div>
             </div>
 
@@ -376,7 +376,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ productId, onClos
             <div className="space-y-3">
               <button
                 onClick={handleAddToBag}
-                className="w-full bg-blue-600 text-white py-4 rounded-full font-bold flex items-center justify-center space-x-2 hover:bg-blue-700 transition-all active:scale-[0.98]"
+                className="w-full bg-zinc-900 text-white py-4 rounded-full font-bold flex items-center justify-center space-x-2 hover:bg-zinc-800 transition-all active:scale-[0.98]"
               >
                 <ShoppingBag size={20} />
                 <span>Add to Bag</span>
@@ -387,7 +387,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ productId, onClos
                 className={`w-full border py-4 rounded-full font-medium flex items-center justify-center space-x-2 transition-all ${
                   isFavorite 
                     ? 'border-red-200 bg-red-50 text-red-600' 
-                    : 'border-blue-200 text-slate-900 hover:border-blue-900'
+                    : 'border-zinc-200 text-zinc-900 hover:border-zinc-900'
                 }`}
               >
                 <Heart size={20} className={isFavorite ? 'fill-red-500' : ''} />
@@ -399,7 +399,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ productId, onClos
             {product.bulk_pricing.length > 0 && (
               <button
                 onClick={() => setShowBulkModal(true)}
-                className="w-full border-2 border-dashed border-blue-300 py-4 rounded-xl text-slate-600 font-medium hover:border-blue-900 hover:text-slate-900 transition-all flex items-center justify-center space-x-2"
+                className="w-full border-2 border-dashed border-zinc-300 py-4 rounded-xl text-zinc-600 font-medium hover:border-zinc-900 hover:text-zinc-900 transition-all flex items-center justify-center space-x-2"
               >
                 <Package size={20} />
                 <span>Buy in Bulk - Save up to {Math.max(...product.bulk_pricing.map(b => b.discount_percent))}%</span>
@@ -407,9 +407,9 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ productId, onClos
             )}
 
             {/* Product Details */}
-            <div className="pt-6 border-t border-blue-100">
-              <h3 className="font-bold text-slate-900 mb-3">Product Details</h3>
-              <p className="text-slate-600 text-sm leading-relaxed">
+            <div className="pt-6 border-t border-zinc-100">
+              <h3 className="font-bold text-zinc-900 mb-3">Product Details</h3>
+              <p className="text-zinc-600 text-sm leading-relaxed">
                 {product.details?.long_description || product.description || 'Premium quality product crafted with attention to detail.'}
               </p>
             </div>
@@ -417,10 +417,10 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ productId, onClos
             {/* Features */}
             {product.details?.features && product.details.features.length > 0 && (
               <div className="pt-4">
-                <h3 className="font-bold text-slate-900 mb-3">Features</h3>
+                <h3 className="font-bold text-zinc-900 mb-3">Features</h3>
                 <ul className="space-y-2">
                   {product.details.features.map((feature, idx) => (
-                    <li key={idx} className="flex items-start space-x-2 text-sm text-slate-600">
+                    <li key={idx} className="flex items-start space-x-2 text-sm text-zinc-600">
                       <Check size={16} className="text-green-600 mt-0.5 flex-shrink-0" />
                       <span>{feature}</span>
                     </li>
@@ -432,18 +432,18 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ productId, onClos
             {/* Care Instructions */}
             {product.details?.care_instructions && (
               <div className="pt-4">
-                <h3 className="font-bold text-slate-900 mb-2">Care</h3>
-                <p className="text-slate-600 text-sm">{product.details.care_instructions}</p>
+                <h3 className="font-bold text-zinc-900 mb-2">Care</h3>
+                <p className="text-zinc-600 text-sm">{product.details.care_instructions}</p>
               </div>
             )}
 
             {/* Shipping & Returns */}
-            <div className="pt-6 border-t border-blue-100 space-y-4">
-              <div className="flex items-center space-x-3 text-sm text-slate-600">
+            <div className="pt-6 border-t border-zinc-100 space-y-4">
+              <div className="flex items-center space-x-3 text-sm text-zinc-600">
                 <Truck size={18} />
                 <span>Free shipping on orders over $500</span>
               </div>
-              <div className="flex items-center space-x-3 text-sm text-slate-600">
+              <div className="flex items-center space-x-3 text-sm text-zinc-600">
                 <Shield size={18} />
                 <span>Free returns within 30 days</span>
               </div>
@@ -451,7 +451,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ productId, onClos
 
             {/* Rating */}
             {product.details?.rating > 0 && (
-              <div className="pt-4 border-t border-blue-100">
+              <div className="pt-4 border-t border-zinc-100">
                 <div className="flex items-center space-x-2">
                   <div className="flex">
                     {[...Array(5)].map((_, i) => (
@@ -463,7 +463,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ productId, onClos
                     ))}
                   </div>
                   <span className="text-sm font-medium">{product.details.rating}</span>
-                  <span className="text-sm text-slate-400">({product.details.review_count} reviews)</span>
+                  <span className="text-sm text-zinc-400">({product.details.review_count} reviews)</span>
                 </div>
               </div>
             )}
@@ -471,20 +471,20 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ productId, onClos
         </div>
 
         {/* Reviews Section - Full Width Below Product */}
-        <div className="mt-16 border-t border-blue-200 pt-12">
+        <div className="mt-16 border-t border-zinc-200 pt-12">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
             <div>
-              <h2 className="text-2xl font-bold text-slate-900 flex items-center space-x-2">
+              <h2 className="text-2xl font-bold text-zinc-900 flex items-center space-x-2">
                 <MessageSquare size={24} />
                 <span>Customer Reviews</span>
               </h2>
-              <p className="text-slate-500 mt-1">{reviews.length} review{reviews.length !== 1 ? 's' : ''}</p>
+              <p className="text-zinc-500 mt-1">{reviews.length} review{reviews.length !== 1 ? 's' : ''}</p>
             </div>
             
             {isUser && !userReview && (
               <button
                 onClick={() => setShowReviewForm(!showReviewForm)}
-                className="px-6 py-3 bg-blue-600 text-white rounded-full font-medium hover:bg-blue-700 transition-all"
+                className="px-6 py-3 bg-zinc-900 text-white rounded-full font-medium hover:bg-zinc-800 transition-all"
               >
                 Write a Review
               </button>
@@ -493,7 +493,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ productId, onClos
             {!isUser && (
               <button
                 onClick={onOpenAuth}
-                className="px-6 py-3 border border-blue-300 text-zinc-700 rounded-full font-medium hover:border-blue-900 transition-all"
+                className="px-6 py-3 border border-zinc-300 text-zinc-700 rounded-full font-medium hover:border-zinc-900 transition-all"
               >
                 Sign in to Review
               </button>
@@ -502,7 +502,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ productId, onClos
 
           {/* Review Form */}
           {showReviewForm && (
-            <div className="bg-blue-50 rounded-2xl p-6 mb-8">
+            <div className="bg-zinc-50 rounded-2xl p-6 mb-8">
               <h3 className="font-bold text-lg mb-4">Write Your Review</h3>
               
               {/* Rating Stars */}
@@ -533,7 +533,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ productId, onClos
                   placeholder="Summarize your experience"
                   value={reviewForm.title}
                   onChange={(e) => setReviewForm({...reviewForm, title: e.target.value})}
-                  className="w-full px-4 py-3 border border-blue-200 rounded-xl focus:ring-2 focus:ring-zinc-900/10 outline-none"
+                  className="w-full px-4 py-3 border border-zinc-200 rounded-xl focus:ring-2 focus:ring-zinc-900/10 outline-none"
                 />
               </div>
 
@@ -545,7 +545,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ productId, onClos
                   placeholder="Tell others about your experience with this product..."
                   value={reviewForm.review_text}
                   onChange={(e) => setReviewForm({...reviewForm, review_text: e.target.value})}
-                  className="w-full px-4 py-3 border border-blue-200 rounded-xl focus:ring-2 focus:ring-zinc-900/10 outline-none resize-none"
+                  className="w-full px-4 py-3 border border-zinc-200 rounded-xl focus:ring-2 focus:ring-zinc-900/10 outline-none resize-none"
                 />
               </div>
 
@@ -553,14 +553,14 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ productId, onClos
                 <button
                   onClick={handleSubmitReview}
                   disabled={submittingReview || !reviewForm.title || !reviewForm.review_text}
-                  className="px-6 py-3 bg-blue-600 text-white rounded-full font-medium hover:bg-blue-700 transition-all disabled:opacity-50 flex items-center space-x-2"
+                  className="px-6 py-3 bg-zinc-900 text-white rounded-full font-medium hover:bg-zinc-800 transition-all disabled:opacity-50 flex items-center space-x-2"
                 >
                   {submittingReview ? <Loader2 size={18} className="animate-spin" /> : null}
                   <span>{submittingReview ? 'Submitting...' : 'Submit Review'}</span>
                 </button>
                 <button
                   onClick={() => setShowReviewForm(false)}
-                  className="px-6 py-3 border border-blue-200 text-zinc-700 rounded-full font-medium hover:border-blue-900 transition-all"
+                  className="px-6 py-3 border border-zinc-200 text-zinc-700 rounded-full font-medium hover:border-zinc-900 transition-all"
                 >
                   Cancel
                 </button>
@@ -584,8 +584,8 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ productId, onClos
                   />
                 ))}
               </div>
-              <h4 className="font-bold text-slate-900 mb-1">{userReview.title}</h4>
-              <p className="text-slate-600 text-sm">{userReview.review_text}</p>
+              <h4 className="font-bold text-zinc-900 mb-1">{userReview.title}</h4>
+              <p className="text-zinc-600 text-sm">{userReview.review_text}</p>
             </div>
           )}
 
@@ -593,14 +593,14 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ productId, onClos
           {reviews.length > 0 ? (
             <div className="space-y-6">
               {reviews.filter(r => r.id !== userReview?.id).map((review) => (
-                <div key={review.id} className="border-b border-blue-100 pb-6 last:border-0">
+                <div key={review.id} className="border-b border-zinc-100 pb-6 last:border-0">
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                        <User size={20} className="text-slate-400" />
+                      <div className="w-10 h-10 bg-zinc-100 rounded-full flex items-center justify-center">
+                        <User size={20} className="text-zinc-400" />
                       </div>
                       <div>
-                        <p className="font-medium text-slate-900 text-sm">
+                        <p className="font-medium text-zinc-900 text-sm">
                           {review.user_email?.split('@')[0] || 'Anonymous'}
                         </p>
                         <div className="flex items-center space-x-2">
@@ -622,17 +622,17 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ productId, onClos
                         </div>
                       </div>
                     </div>
-                    <span className="text-xs text-slate-400">
+                    <span className="text-xs text-zinc-400">
                       {new Date(review.created_at).toLocaleDateString()}
                     </span>
                   </div>
                   
-                  <h4 className="font-bold text-slate-900 mb-1">{review.title}</h4>
-                  <p className="text-slate-600 text-sm mb-4">{review.review_text}</p>
+                  <h4 className="font-bold text-zinc-900 mb-1">{review.title}</h4>
+                  <p className="text-zinc-600 text-sm mb-4">{review.review_text}</p>
                   
                   <button
                     onClick={() => handleMarkHelpful(review.id)}
-                    className="flex items-center space-x-2 text-sm text-slate-500 hover:text-slate-900 transition-colors"
+                    className="flex items-center space-x-2 text-sm text-zinc-500 hover:text-zinc-900 transition-colors"
                   >
                     <ThumbsUp size={14} />
                     <span>Helpful ({review.helpful_count})</span>
@@ -641,10 +641,10 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ productId, onClos
               ))}
             </div>
           ) : (
-            <div className="text-center py-12 bg-blue-50 rounded-2xl">
+            <div className="text-center py-12 bg-zinc-50 rounded-2xl">
               <MessageSquare size={40} className="mx-auto text-zinc-300 mb-4" />
-              <p className="text-slate-500 mb-2">No reviews yet</p>
-              <p className="text-sm text-slate-400">Be the first to share your experience!</p>
+              <p className="text-zinc-500 mb-2">No reviews yet</p>
+              <p className="text-sm text-zinc-400">Be the first to share your experience!</p>
             </div>
           )}
         </div>
@@ -657,14 +657,14 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ productId, onClos
           <div className="relative bg-white rounded-2xl shadow-2xl max-w-lg w-full p-8">
             <button 
               onClick={() => setShowSizeGuide(false)}
-              className="absolute top-4 right-4 p-2 hover:bg-blue-100 rounded-full"
+              className="absolute top-4 right-4 p-2 hover:bg-zinc-100 rounded-full"
             >
               <X size={20} />
             </button>
             <h2 className="text-2xl font-bold mb-6">Size Guide</h2>
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-blue-200">
+                <tr className="border-b border-zinc-200">
                   <th className="py-3 text-left font-bold">Size</th>
                   <th className="py-3 text-left font-bold">Chest (in)</th>
                   <th className="py-3 text-left font-bold">Waist (in)</th>
@@ -680,11 +680,11 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ productId, onClos
                   { size: 'XL', chest: '46-48', waist: '40-42', hip: '48-50' },
                   { size: 'XXL', chest: '50-52', waist: '44-46', hip: '52-54' },
                 ].map(row => (
-                  <tr key={row.size} className="border-b border-blue-100">
+                  <tr key={row.size} className="border-b border-zinc-100">
                     <td className="py-3 font-medium">{row.size}</td>
-                    <td className="py-3 text-slate-600">{row.chest}</td>
-                    <td className="py-3 text-slate-600">{row.waist}</td>
-                    <td className="py-3 text-slate-600">{row.hip}</td>
+                    <td className="py-3 text-zinc-600">{row.chest}</td>
+                    <td className="py-3 text-zinc-600">{row.waist}</td>
+                    <td className="py-3 text-zinc-600">{row.hip}</td>
                   </tr>
                 ))}
               </tbody>
@@ -700,21 +700,21 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ productId, onClos
           <div className="relative bg-white rounded-2xl shadow-2xl max-w-md w-full p-8">
             <button 
               onClick={() => setShowBulkModal(false)}
-              className="absolute top-4 right-4 p-2 hover:bg-blue-100 rounded-full"
+              className="absolute top-4 right-4 p-2 hover:bg-zinc-100 rounded-full"
             >
               <X size={20} />
             </button>
             <div className="flex items-center space-x-3 mb-6">
-              <Package size={24} className="text-slate-900" />
+              <Package size={24} className="text-zinc-900" />
               <h2 className="text-2xl font-bold">Bulk Order</h2>
             </div>
 
-            <p className="text-slate-600 mb-6">Order in larger quantities and save more!</p>
+            <p className="text-zinc-600 mb-6">Order in larger quantities and save more!</p>
 
             {/* Pricing Tiers */}
             <div className="space-y-2 mb-6">
               {product.bulk_pricing.map(tier => (
-                <div key={tier.id} className="flex justify-between items-center py-2 px-3 bg-blue-50 rounded-lg">
+                <div key={tier.id} className="flex justify-between items-center py-2 px-3 bg-zinc-50 rounded-lg">
                   <span className="text-sm">
                     {tier.min_quantity}+ units
                   </span>
@@ -727,11 +727,11 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ productId, onClos
 
             {/* Quantity Selector */}
             <div className="mb-6">
-              <label className="text-sm font-medium text-slate-900 mb-2 block">Quantity</label>
-              <div className="flex items-center border border-blue-200 rounded-lg w-fit">
+              <label className="text-sm font-medium text-zinc-900 mb-2 block">Quantity</label>
+              <div className="flex items-center border border-zinc-200 rounded-lg w-fit">
                 <button
                   onClick={() => setBulkQuantity(q => Math.max(1, q - 5))}
-                  className="p-3 hover:bg-blue-50 transition-colors"
+                  className="p-3 hover:bg-zinc-50 transition-colors"
                 >
                   <Minus size={16} />
                 </button>
@@ -743,7 +743,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ productId, onClos
                 />
                 <button
                   onClick={() => setBulkQuantity(q => q + 5)}
-                  className="p-3 hover:bg-blue-50 transition-colors"
+                  className="p-3 hover:bg-zinc-50 transition-colors"
                 >
                   <Plus size={16} />
                 </button>
@@ -751,9 +751,9 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ productId, onClos
             </div>
 
             {/* Price Summary */}
-            <div className="bg-blue-50 rounded-xl p-4 mb-6">
+            <div className="bg-zinc-50 rounded-xl p-4 mb-6">
               <div className="flex justify-between items-center mb-2">
-                <span className="text-slate-600">Unit Price</span>
+                <span className="text-zinc-600">Unit Price</span>
                 <span>{formatPKR(product.price)}</span>
               </div>
               {discount > 0 && (
@@ -762,7 +762,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ productId, onClos
                   <span>-{discount}%</span>
                 </div>
               )}
-              <div className="flex justify-between items-center pt-2 border-t border-blue-200 font-bold text-lg">
+              <div className="flex justify-between items-center pt-2 border-t border-zinc-200 font-bold text-lg">
                 <span>Total</span>
                 <span>{formatPKR(getBulkPrice(bulkQuantity))}</span>
               </div>
@@ -775,7 +775,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ productId, onClos
 
             <button
               onClick={handleBulkOrder}
-              className="w-full bg-blue-600 text-white py-4 rounded-full font-bold hover:bg-blue-700 transition-all"
+              className="w-full bg-zinc-900 text-white py-4 rounded-full font-bold hover:bg-zinc-800 transition-all"
             >
               Add {bulkQuantity} Items to Bag
             </button>

@@ -215,22 +215,22 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cart, onClose, onOrderCompl
               <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
                 <CheckCircle2 size={40} className="text-green-600" />
               </div>
-              <h1 className="text-3xl font-bold text-slate-900 mb-2">Order Confirmed!</h1>
-              <p className="text-slate-500">Thank you for your purchase</p>
+              <h1 className="text-3xl font-bold text-zinc-900 mb-2">Order Confirmed!</h1>
+              <p className="text-zinc-500">Thank you for your purchase</p>
             </div>
 
             {/* Invoice Actions */}
             <div className="flex justify-center space-x-4 mb-8">
               <button
                 onClick={handlePrintInvoice}
-                className="flex items-center space-x-2 px-6 py-3 bg-blue-600 text-white rounded-full font-medium hover:bg-blue-700 transition-all"
+                className="flex items-center space-x-2 px-6 py-3 bg-zinc-900 text-white rounded-full font-medium hover:bg-zinc-800 transition-all"
               >
                 <Printer size={18} />
                 <span>Print Invoice</span>
               </button>
               <button
                 onClick={handlePrintInvoice}
-                className="flex items-center space-x-2 px-6 py-3 border border-blue-300 text-zinc-700 rounded-full font-medium hover:border-blue-900 transition-all"
+                className="flex items-center space-x-2 px-6 py-3 border border-zinc-300 text-zinc-700 rounded-full font-medium hover:border-zinc-900 transition-all"
               >
                 <Download size={18} />
                 <span>Download PDF</span>
@@ -238,26 +238,26 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cart, onClose, onOrderCompl
             </div>
 
             {/* Invoice Display */}
-            <div ref={invoiceRef} className="bg-white border border-blue-200 rounded-2xl p-8 mb-8 shadow-sm">
+            <div ref={invoiceRef} className="bg-white border border-zinc-200 rounded-2xl p-8 mb-8 shadow-sm">
               {/* Invoice Header */}
-              <div className="invoice-header text-center mb-8 pb-6 border-b-2 border-blue-900">
-                <h1 className="text-3xl font-display font-bold tracking-[0.3em] text-slate-900">ZARQ</h1>
-                <p className="text-sm text-slate-500 mt-1">Premium Clothing</p>
+              <div className="invoice-header text-center mb-8 pb-6 border-b-2 border-zinc-900">
+                <h1 className="text-3xl font-display font-bold tracking-[0.3em] text-zinc-900">DENIVO</h1>
+                <p className="text-sm text-zinc-500 mt-1">Premium Clothing</p>
               </div>
 
               {/* Invoice Details */}
               <div className="invoice-details grid grid-cols-2 gap-8 mb-8">
                 <div className="invoice-section">
-                  <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Invoice To</h3>
-                  <p className="font-bold text-slate-900">{invoice.customer_name}</p>
-                  <p className="text-sm text-slate-600">{invoice.shipping_address}</p>
-                  <p className="text-sm text-slate-600">{invoice.shipping_city}, {invoice.shipping_state} {invoice.shipping_zip}</p>
-                  <p className="text-sm text-slate-600">Pakistan</p>
-                  <p className="text-sm text-slate-500 mt-2">{invoice.customer_email}</p>
-                  {invoice.customer_phone && <p className="text-sm text-slate-500">{invoice.customer_phone}</p>}
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-400 mb-2">Invoice To</h3>
+                  <p className="font-bold text-zinc-900">{invoice.customer_name}</p>
+                  <p className="text-sm text-zinc-600">{invoice.shipping_address}</p>
+                  <p className="text-sm text-zinc-600">{invoice.shipping_city}, {invoice.shipping_state} {invoice.shipping_zip}</p>
+                  <p className="text-sm text-zinc-600">Pakistan</p>
+                  <p className="text-sm text-zinc-500 mt-2">{invoice.customer_email}</p>
+                  {invoice.customer_phone && <p className="text-sm text-zinc-500">{invoice.customer_phone}</p>}
                 </div>
                 <div className="invoice-section text-right">
-                  <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Invoice Details</h3>
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-400 mb-2">Invoice Details</h3>
                   <p className="text-sm"><strong>Invoice #:</strong> {invoice.invoice_number}</p>
                   <p className="text-sm"><strong>Order #:</strong> {invoice.order_number}</p>
                   <p className="text-sm"><strong>Date:</strong> {new Date(invoice.created_at).toLocaleDateString('en-PK', { 
@@ -276,17 +276,17 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cart, onClose, onOrderCompl
               {/* Items Table */}
               <table className="w-full mb-8">
                 <thead>
-                  <tr className="border-b-2 border-blue-200">
-                    <th className="text-left py-3 text-xs font-bold uppercase tracking-wider text-slate-500">Item</th>
-                    <th className="text-center py-3 text-xs font-bold uppercase tracking-wider text-slate-500">Size</th>
-                    <th className="text-center py-3 text-xs font-bold uppercase tracking-wider text-slate-500">Qty</th>
-                    <th className="text-right py-3 text-xs font-bold uppercase tracking-wider text-slate-500">Price</th>
-                    <th className="text-right py-3 text-xs font-bold uppercase tracking-wider text-slate-500">Total</th>
+                  <tr className="border-b-2 border-zinc-200">
+                    <th className="text-left py-3 text-xs font-bold uppercase tracking-wider text-zinc-500">Item</th>
+                    <th className="text-center py-3 text-xs font-bold uppercase tracking-wider text-zinc-500">Size</th>
+                    <th className="text-center py-3 text-xs font-bold uppercase tracking-wider text-zinc-500">Qty</th>
+                    <th className="text-right py-3 text-xs font-bold uppercase tracking-wider text-zinc-500">Price</th>
+                    <th className="text-right py-3 text-xs font-bold uppercase tracking-wider text-zinc-500">Total</th>
                   </tr>
                 </thead>
                 <tbody>
                   {invoice.items.map((item, idx) => (
-                    <tr key={idx} className="border-b border-blue-100">
+                    <tr key={idx} className="border-b border-zinc-100">
                       <td className="py-4">
                         <div className="flex items-center space-x-3">
                           {item.product_image && (
@@ -307,11 +307,11 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cart, onClose, onOrderCompl
               {/* Totals */}
               <div className="totals ml-auto w-72">
                 <div className="flex justify-between py-2 text-sm">
-                  <span className="text-slate-500">Subtotal</span>
+                  <span className="text-zinc-500">Subtotal</span>
                   <span>{formatPKR(invoice.subtotal)}</span>
                 </div>
                 <div className="flex justify-between py-2 text-sm">
-                  <span className="text-slate-500">Shipping</span>
+                  <span className="text-zinc-500">Shipping</span>
                   <span>{invoice.shipping_cost === 0 ? <span className="text-green-600">FREE</span> : formatPKR(invoice.shipping_cost)}</span>
                 </div>
                 {invoice.discount_amount > 0 && (
@@ -320,16 +320,16 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cart, onClose, onOrderCompl
                     <span>-{formatPKR(invoice.discount_amount)}</span>
                   </div>
                 )}
-                <div className="flex justify-between py-3 mt-2 border-t-2 border-blue-900">
+                <div className="flex justify-between py-3 mt-2 border-t-2 border-zinc-900">
                   <span className="font-bold text-lg">Total</span>
                   <span className="font-bold text-lg">{formatPKR(invoice.total)}</span>
                 </div>
               </div>
 
               {/* Footer */}
-              <div className="footer text-center mt-8 pt-6 border-t border-blue-200">
-                <p className="text-xs text-slate-400">Thank you for shopping with ZARQ</p>
-                <p className="text-xs text-slate-400 mt-1">For queries, contact us at support@ZARQ.pk</p>
+              <div className="footer text-center mt-8 pt-6 border-t border-zinc-200">
+                <p className="text-xs text-zinc-400">Thank you for shopping with DENIVO</p>
+                <p className="text-xs text-zinc-400 mt-1">For queries, contact us at support@denivo.pk</p>
               </div>
             </div>
 
@@ -346,13 +346,13 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cart, onClose, onOrderCompl
               </div>
             )}
 
-            <p className="text-sm text-slate-500 text-center mb-6">
+            <p className="text-sm text-zinc-500 text-center mb-6">
               A confirmation email has been sent to <strong>{completedOrder.customer_email}</strong>
             </p>
 
             <button
               onClick={onClose}
-              className="w-full bg-blue-600 text-white py-4 rounded-full font-bold hover:bg-blue-700 transition-all"
+              className="w-full bg-zinc-900 text-white py-4 rounded-full font-bold hover:bg-zinc-800 transition-all"
             >
               Continue Shopping
             </button>
@@ -363,34 +363,34 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cart, onClose, onOrderCompl
   }
 
   return (
-    <div className="fixed inset-0 z-[80] bg-blue-50 overflow-y-auto">
+    <div className="fixed inset-0 z-[80] bg-zinc-50 overflow-y-auto">
       {/* Header */}
-      <div className="sticky top-0 z-10 bg-white border-b border-blue-200">
+      <div className="sticky top-0 z-10 bg-white border-b border-zinc-200">
         <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
           <button 
             onClick={onClose}
-            className="flex items-center space-x-2 text-slate-600 hover:text-slate-900 transition-colors"
+            className="flex items-center space-x-2 text-zinc-600 hover:text-zinc-900 transition-colors"
           >
             <ChevronLeft size={20} />
             <span className="text-sm font-medium">Back to Cart</span>
           </button>
-          <h1 className="text-xl font-display font-bold tracking-tighter">ZARQ</h1>
+          <h1 className="text-xl font-display font-bold tracking-tighter">DENIVO</h1>
           <div className="w-24" />
         </div>
       </div>
 
       {/* Progress Steps */}
-      <div className="bg-white border-b border-blue-200">
+      <div className="bg-white border-b border-zinc-200">
         <div className="max-w-3xl mx-auto px-4 py-4">
           <div className="flex items-center justify-center space-x-4">
             {['shipping', 'payment', 'confirm'].map((s, i) => (
               <React.Fragment key={s}>
                 <div className={`flex items-center space-x-2 ${
-                  step === s ? 'text-slate-900' : 
-                  ['shipping', 'payment', 'confirm'].indexOf(step) > i ? 'text-green-600' : 'text-slate-400'
+                  step === s ? 'text-zinc-900' : 
+                  ['shipping', 'payment', 'confirm'].indexOf(step) > i ? 'text-green-600' : 'text-zinc-400'
                 }`}>
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
-                    step === s ? 'bg-blue-600 text-white' :
+                    step === s ? 'bg-zinc-900 text-white' :
                     ['shipping', 'payment', 'confirm'].indexOf(step) > i ? 'bg-green-600 text-white' : 'bg-zinc-200'
                   }`}>
                     {['shipping', 'payment', 'confirm'].indexOf(step) > i ? <Check size={16} /> : i + 1}
@@ -440,14 +440,14 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cart, onClose, onOrderCompl
                         Email Address *
                       </label>
                       <div className="relative">
-                        <Mail size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                        <Mail size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" />
                         <input
                           type="email"
                           name="email"
                           required
                           value={formData.email}
                           onChange={handleInputChange}
-                          className="w-full pl-10 pr-4 py-3 border border-blue-200 rounded-xl focus:ring-2 focus:ring-zinc-900/10 outline-none"
+                          className="w-full pl-10 pr-4 py-3 border border-zinc-200 rounded-xl focus:ring-2 focus:ring-zinc-900/10 outline-none"
                           placeholder="your@email.com"
                         />
                       </div>
@@ -457,14 +457,14 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cart, onClose, onOrderCompl
                         Full Name *
                       </label>
                       <div className="relative">
-                        <User size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                        <User size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" />
                         <input
                           type="text"
                           name="fullName"
                           required
                           value={formData.fullName}
                           onChange={handleInputChange}
-                          className="w-full pl-10 pr-4 py-3 border border-blue-200 rounded-xl focus:ring-2 focus:ring-zinc-900/10 outline-none"
+                          className="w-full pl-10 pr-4 py-3 border border-zinc-200 rounded-xl focus:ring-2 focus:ring-zinc-900/10 outline-none"
                           placeholder="John Doe"
                         />
                       </div>
@@ -476,13 +476,13 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cart, onClose, onOrderCompl
                       Phone Number
                     </label>
                     <div className="relative">
-                      <Phone size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                      <Phone size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" />
                       <input
                         type="tel"
                         name="phone"
                         value={formData.phone}
                         onChange={handleInputChange}
-                        className="w-full pl-10 pr-4 py-3 border border-blue-200 rounded-xl focus:ring-2 focus:ring-zinc-900/10 outline-none"
+                        className="w-full pl-10 pr-4 py-3 border border-zinc-200 rounded-xl focus:ring-2 focus:ring-zinc-900/10 outline-none"
                         placeholder="+92 300 1234567"
                       />
                     </div>
@@ -498,7 +498,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cart, onClose, onOrderCompl
                       required
                       value={formData.address}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-3 border border-blue-200 rounded-xl focus:ring-2 focus:ring-zinc-900/10 outline-none"
+                      className="w-full px-4 py-3 border border-zinc-200 rounded-xl focus:ring-2 focus:ring-zinc-900/10 outline-none"
                       placeholder="House 123, Street 4, Block B"
                     />
                   </div>
@@ -513,7 +513,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cart, onClose, onOrderCompl
                         required
                         value={formData.state}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-blue-200 rounded-xl focus:ring-2 focus:ring-zinc-900/10 outline-none bg-white"
+                        className="w-full px-4 py-3 border border-zinc-200 rounded-xl focus:ring-2 focus:ring-zinc-900/10 outline-none bg-white"
                       >
                         {PAKISTAN_PROVINCES.map(province => (
                           <option key={province} value={province}>{province}</option>
@@ -529,7 +529,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cart, onClose, onOrderCompl
                         required
                         value={formData.city}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-blue-200 rounded-xl focus:ring-2 focus:ring-zinc-900/10 outline-none bg-white"
+                        className="w-full px-4 py-3 border border-zinc-200 rounded-xl focus:ring-2 focus:ring-zinc-900/10 outline-none bg-white"
                       >
                         <option value="">Select City</option>
                         {availableCities.map(city => (
@@ -549,7 +549,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cart, onClose, onOrderCompl
                       required
                       value={formData.zip}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-3 border border-blue-200 rounded-xl focus:ring-2 focus:ring-zinc-900/10 outline-none"
+                      className="w-full px-4 py-3 border border-zinc-200 rounded-xl focus:ring-2 focus:ring-zinc-900/10 outline-none"
                       placeholder="54000"
                     />
                   </div>
@@ -563,7 +563,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cart, onClose, onOrderCompl
                       name="country"
                       value="Pakistan"
                       disabled
-                      className="w-full px-4 py-3 border border-blue-200 rounded-xl bg-blue-50 text-slate-600"
+                      className="w-full px-4 py-3 border border-zinc-200 rounded-xl bg-zinc-50 text-zinc-600"
                     />
                   </div>
 
@@ -576,7 +576,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cart, onClose, onOrderCompl
                       value={formData.orderNotes}
                       onChange={handleInputChange}
                       rows={3}
-                      className="w-full px-4 py-3 border border-blue-200 rounded-xl focus:ring-2 focus:ring-zinc-900/10 outline-none resize-none"
+                      className="w-full px-4 py-3 border border-zinc-200 rounded-xl focus:ring-2 focus:ring-zinc-900/10 outline-none resize-none"
                       placeholder="Special delivery instructions..."
                     />
                   </div>
@@ -591,7 +591,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cart, onClose, onOrderCompl
 
                 <button
                   onClick={handleContinueToPayment}
-                  className="w-full mt-6 bg-blue-600 text-white py-4 rounded-full font-bold hover:bg-blue-700 transition-all"
+                  className="w-full mt-6 bg-zinc-900 text-white py-4 rounded-full font-bold hover:bg-zinc-800 transition-all"
                 >
                   Continue to Payment
                 </button>
@@ -610,8 +610,8 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cart, onClose, onOrderCompl
                   {/* Cash on Delivery */}
                   <label className={`block p-4 border-2 rounded-xl cursor-pointer transition-all ${
                     formData.paymentMethod === 'cod' 
-                      ? 'border-blue-900 bg-blue-50' 
-                      : 'border-blue-200 hover:border-blue-400'
+                      ? 'border-zinc-900 bg-zinc-50' 
+                      : 'border-zinc-200 hover:border-zinc-400'
                   }`}>
                     <div className="flex items-start space-x-4">
                       <input
@@ -627,7 +627,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cart, onClose, onOrderCompl
                           <Banknote size={20} className="text-green-600" />
                           <span className="font-bold">Cash on Delivery</span>
                         </div>
-                        <p className="text-sm text-slate-500 mt-1">
+                        <p className="text-sm text-zinc-500 mt-1">
                           Pay with cash when your order is delivered to your doorstep.
                         </p>
                       </div>
@@ -637,8 +637,8 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cart, onClose, onOrderCompl
                   {/* Online Payment */}
                   <label className={`block p-4 border-2 rounded-xl cursor-pointer transition-all ${
                     formData.paymentMethod === 'online' 
-                      ? 'border-blue-900 bg-blue-50' 
-                      : 'border-blue-200 hover:border-blue-400'
+                      ? 'border-zinc-900 bg-zinc-50' 
+                      : 'border-zinc-200 hover:border-zinc-400'
                   }`}>
                     <div className="flex items-start space-x-4">
                       <input
@@ -655,7 +655,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cart, onClose, onOrderCompl
                           <span className="font-bold">Pay Online</span>
                           <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">Secure</span>
                         </div>
-                        <p className="text-sm text-slate-500 mt-1">
+                        <p className="text-sm text-zinc-500 mt-1">
                           Pay securely with credit card, debit card, or digital wallet.
                         </p>
                         {formData.paymentMethod === 'online' && (
@@ -674,14 +674,14 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cart, onClose, onOrderCompl
                 <div className="flex space-x-4 mt-6">
                   <button
                     onClick={() => setStep('shipping')}
-                    className="flex-1 border border-blue-300 text-zinc-700 py-4 rounded-full font-bold hover:border-blue-900 transition-all"
+                    className="flex-1 border border-zinc-300 text-zinc-700 py-4 rounded-full font-bold hover:border-zinc-900 transition-all"
                   >
                     Back
                   </button>
                   <button
                     onClick={() => setStep('confirm')}
                     disabled={formData.paymentMethod === 'online'}
-                    className="flex-1 bg-blue-600 text-white py-4 rounded-full font-bold hover:bg-blue-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex-1 bg-zinc-900 text-white py-4 rounded-full font-bold hover:bg-zinc-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Review Order
                   </button>
@@ -698,24 +698,24 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cart, onClose, onOrderCompl
                 </h2>
 
                 {/* Shipping Summary */}
-                <div className="border border-blue-200 rounded-xl p-4 mb-4">
+                <div className="border border-zinc-200 rounded-xl p-4 mb-4">
                   <div className="flex justify-between items-start mb-2">
-                    <h3 className="font-bold text-sm text-slate-900">Shipping To</h3>
+                    <h3 className="font-bold text-sm text-zinc-900">Shipping To</h3>
                     <button onClick={() => setStep('shipping')} className="text-sm text-blue-600 hover:underline">
                       Edit
                     </button>
                   </div>
-                  <p className="text-sm text-slate-600">{formData.fullName}</p>
-                  <p className="text-sm text-slate-600">{formData.address}</p>
-                  <p className="text-sm text-slate-600">{formData.city}, {formData.state} {formData.zip}</p>
-                  <p className="text-sm text-slate-600">{formData.country}</p>
-                  <p className="text-sm text-slate-500 mt-2">{formData.email}</p>
+                  <p className="text-sm text-zinc-600">{formData.fullName}</p>
+                  <p className="text-sm text-zinc-600">{formData.address}</p>
+                  <p className="text-sm text-zinc-600">{formData.city}, {formData.state} {formData.zip}</p>
+                  <p className="text-sm text-zinc-600">{formData.country}</p>
+                  <p className="text-sm text-zinc-500 mt-2">{formData.email}</p>
                 </div>
 
                 {/* Payment Summary */}
-                <div className="border border-blue-200 rounded-xl p-4 mb-4">
+                <div className="border border-zinc-200 rounded-xl p-4 mb-4">
                   <div className="flex justify-between items-start mb-2">
-                    <h3 className="font-bold text-sm text-slate-900">Payment Method</h3>
+                    <h3 className="font-bold text-sm text-zinc-900">Payment Method</h3>
                     <button onClick={() => setStep('payment')} className="text-sm text-blue-600 hover:underline">
                       Edit
                     </button>
@@ -736,8 +736,8 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cart, onClose, onOrderCompl
                 </div>
 
                 {/* Items */}
-                <div className="border border-blue-200 rounded-xl p-4 mb-6">
-                  <h3 className="font-bold text-sm text-slate-900 mb-3">Order Items ({cart.length})</h3>
+                <div className="border border-zinc-200 rounded-xl p-4 mb-6">
+                  <h3 className="font-bold text-sm text-zinc-900 mb-3">Order Items ({cart.length})</h3>
                   <div className="space-y-3 max-h-60 overflow-y-auto">
                     {cart.map(item => (
                       <div key={`${item.id}-${item.selectedSize}`} className="flex space-x-3">
@@ -748,7 +748,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cart, onClose, onOrderCompl
                         />
                         <div className="flex-1">
                           <p className="font-medium text-sm">{item.name}</p>
-                          <p className="text-xs text-slate-500">
+                          <p className="text-xs text-zinc-500">
                             {item.selectedSize && `Size: ${item.selectedSize} • `}
                             Qty: {item.quantity}
                           </p>
@@ -769,14 +769,14 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cart, onClose, onOrderCompl
                 <div className="flex space-x-4">
                   <button
                     onClick={() => setStep('payment')}
-                    className="flex-1 border border-blue-300 text-zinc-700 py-4 rounded-full font-bold hover:border-blue-900 transition-all"
+                    className="flex-1 border border-zinc-300 text-zinc-700 py-4 rounded-full font-bold hover:border-zinc-900 transition-all"
                   >
                     Back
                   </button>
                   <button
                     onClick={handlePlaceOrder}
                     disabled={loading}
-                    className="flex-1 bg-blue-600 text-white py-4 rounded-full font-bold hover:bg-blue-700 transition-all disabled:opacity-50 flex items-center justify-center space-x-2"
+                    className="flex-1 bg-zinc-900 text-white py-4 rounded-full font-bold hover:bg-zinc-800 transition-all disabled:opacity-50 flex items-center justify-center space-x-2"
                   >
                     {loading ? (
                       <>
@@ -810,14 +810,14 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cart, onClose, onOrderCompl
                         alt={item.name}
                         className="w-14 h-16 object-cover rounded-lg"
                       />
-                      <span className="absolute -top-2 -right-2 w-5 h-5 bg-blue-600 text-white text-xs rounded-full flex items-center justify-center">
+                      <span className="absolute -top-2 -right-2 w-5 h-5 bg-zinc-900 text-white text-xs rounded-full flex items-center justify-center">
                         {item.quantity}
                       </span>
                     </div>
                     <div className="flex-1">
                       <p className="text-sm font-medium truncate">{item.name}</p>
                       {item.selectedSize && (
-                        <p className="text-xs text-slate-500">Size: {item.selectedSize}</p>
+                        <p className="text-xs text-zinc-500">Size: {item.selectedSize}</p>
                       )}
                     </div>
                     <p className="text-sm font-bold">{formatPKR(item.price * item.quantity)}</p>
@@ -825,16 +825,16 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cart, onClose, onOrderCompl
                 ))}
               </div>
 
-              <div className="border-t border-blue-200 pt-4 space-y-3">
+              <div className="border-t border-zinc-200 pt-4 space-y-3">
                 <div className="flex justify-between text-sm">
-                  <span className="text-slate-600">Subtotal</span>
+                  <span className="text-zinc-600">Subtotal</span>
                   <span>{formatPKR(subtotal)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-slate-600">Shipping</span>
+                  <span className="text-zinc-600">Shipping</span>
                   <span>{shippingCost === 0 ? <span className="text-green-600">FREE</span> : formatPKR(shippingCost)}</span>
                 </div>
-                <div className="flex justify-between font-bold text-lg pt-3 border-t border-blue-200">
+                <div className="flex justify-between font-bold text-lg pt-3 border-t border-zinc-200">
                   <span>Total</span>
                   <span>{formatPKR(total)}</span>
                 </div>
@@ -848,7 +848,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cart, onClose, onOrderCompl
                 </div>
               )}
 
-              <div className="mt-6 space-y-3 text-xs text-slate-500">
+              <div className="mt-6 space-y-3 text-xs text-zinc-500">
                 <div className="flex items-center space-x-2">
                   <Shield size={14} />
                   <span>Secure checkout</span>

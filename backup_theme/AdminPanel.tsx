@@ -291,7 +291,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onProductAdded }) => {
           care_instructions: detailsForm.care_instructions,
           features: detailsForm.features.split('\n').filter(f => f.trim()),
           sku: detailsForm.sku,
-          brand: 'ZARQ'
+          brand: 'Denivo'
         });
       }
       
@@ -457,16 +457,16 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onProductAdded }) => {
   return (
     <div className="max-w-6xl mx-auto px-4 py-16 space-y-8">
       {/* Session Health Bar */}
-      <div className="flex flex-col md:flex-row gap-4 items-center justify-between bg-blue-50 border border-blue-200 p-4 rounded-3xl">
+      <div className="flex flex-col md:flex-row gap-4 items-center justify-between bg-zinc-50 border border-zinc-200 p-4 rounded-3xl">
         <div className="flex items-center space-x-3">
           <div className={`w-3 h-3 rounded-full ${isAdmin ? 'bg-green-500 animate-pulse' : 'bg-zinc-300'}`} />
-          <div className="text-xs font-bold uppercase tracking-widest text-slate-500">
+          <div className="text-xs font-bold uppercase tracking-widest text-zinc-500">
             {authChecking ? 'Verifying Session...' : `Session: ${currentUser?.email || 'Anonymous'}`}
           </div>
         </div>
         <button 
           onClick={checkAuth}
-          className="text-[10px] font-bold uppercase tracking-widest text-slate-400 hover:text-slate-900 flex items-center space-x-2 transition-colors"
+          className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 hover:text-zinc-900 flex items-center space-x-2 transition-colors"
         >
           <RefreshCw size={12} className={authChecking ? 'animate-spin' : ''} />
           <span>Sync Session</span>
@@ -487,16 +487,16 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onProductAdded }) => {
       )}
 
       {/* Header */}
-      <div className="bg-blue-600 rounded-[2.5rem] p-10 text-white shadow-2xl flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div className="bg-zinc-900 rounded-[2.5rem] p-10 text-white shadow-2xl flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="flex items-center space-x-4">
           <div className="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center">
             {viewMode === 'products' ? <Package size={28} className="text-white" /> : <ShoppingCart size={28} className="text-white" />}
           </div>
           <div>
-            <h2 className="text-4xl font-display font-bold">ZARQ Command</h2>
+            <h2 className="text-4xl font-display font-bold">Denivo Command</h2>
             <div className="flex items-center space-x-2 mt-1">
-              <ShieldCheck size={14} className={isAdmin ? 'text-green-400' : 'text-slate-500'} />
-              <p className="text-slate-400 text-[10px] uppercase font-bold tracking-widest">
+              <ShieldCheck size={14} className={isAdmin ? 'text-green-400' : 'text-zinc-500'} />
+              <p className="text-zinc-400 text-[10px] uppercase font-bold tracking-widest">
                 {isAdmin ? 'Master Administrator Access' : 'Restricted Guest View'}
               </p>
             </div>
@@ -508,7 +508,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onProductAdded }) => {
             <button
               onClick={() => setViewMode('products')}
               className={`px-4 py-2 text-xs font-bold uppercase tracking-widest flex items-center space-x-2 transition-all ${
-                viewMode === 'products' ? 'bg-white text-slate-900' : 'text-white hover:bg-white/20'
+                viewMode === 'products' ? 'bg-white text-zinc-900' : 'text-white hover:bg-white/20'
               }`}
             >
               <Package size={14} />
@@ -517,7 +517,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onProductAdded }) => {
             <button
               onClick={() => setViewMode('orders')}
               className={`px-4 py-2 text-xs font-bold uppercase tracking-widest flex items-center space-x-2 transition-all ${
-                viewMode === 'orders' ? 'bg-white text-slate-900' : 'text-white hover:bg-white/20'
+                viewMode === 'orders' ? 'bg-white text-zinc-900' : 'text-white hover:bg-white/20'
               }`}
             >
               <ShoppingCart size={14} />
@@ -547,14 +547,14 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onProductAdded }) => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
         {/* Form Column */}
         <div className="lg:col-span-5">
-          <div className="bg-white rounded-[2rem] border border-blue-100 shadow-xl p-8 sticky top-24">
+          <div className="bg-white rounded-[2rem] border border-zinc-100 shadow-xl p-8 sticky top-24">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-display font-bold flex items-center space-x-2 text-slate-900">
-                {editingId ? <Edit3 size={20} /> : <Plus size={20} className="text-slate-400" />}
+              <h3 className="text-xl font-display font-bold flex items-center space-x-2 text-zinc-900">
+                {editingId ? <Edit3 size={20} /> : <Plus size={20} className="text-zinc-400" />}
                 <span>{editingId ? 'Edit Product' : 'New Arrival'}</span>
               </h3>
               {editingId && (
-                <button onClick={resetForm} className="text-slate-400 hover:text-slate-900 transition-colors">
+                <button onClick={resetForm} className="text-zinc-400 hover:text-zinc-900 transition-colors">
                   <X size={20} />
                 </button>
               )}
@@ -569,10 +569,10 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onProductAdded }) => {
                   disabled={tab.requiresEdit && !editingId}
                   className={`flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all ${
                     activeTab === tab.id
-                      ? 'bg-blue-600 text-white'
+                      ? 'bg-zinc-900 text-white'
                       : tab.requiresEdit && !editingId
-                        ? 'bg-blue-100 text-zinc-300 cursor-not-allowed'
-                        : 'bg-blue-100 text-slate-600 hover:bg-zinc-200'
+                        ? 'bg-zinc-100 text-zinc-300 cursor-not-allowed'
+                        : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200'
                   }`}
                 >
                   <tab.icon size={14} />
@@ -585,12 +585,12 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onProductAdded }) => {
             {activeTab === 'basic' && (
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
-                  <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 mb-2 ml-1">Product Name</label>
+                  <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400 mb-2 ml-1">Product Name</label>
                   <input
                     required
                     type="text"
                     placeholder="e.g. Italian Wool Blazer"
-                    className="w-full px-5 py-4 bg-blue-50 border border-blue-100 rounded-2xl text-sm focus:ring-4 focus:ring-zinc-900/5 outline-none transition-all"
+                    className="w-full px-5 py-4 bg-zinc-50 border border-zinc-100 rounded-2xl text-sm focus:ring-4 focus:ring-zinc-900/5 outline-none transition-all"
                     value={formData.name}
                     onChange={e => setFormData({...formData, name: e.target.value})}
                   />
@@ -598,24 +598,24 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onProductAdded }) => {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 mb-2 ml-1">Price (PKR)</label>
+                    <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400 mb-2 ml-1">Price (PKR)</label>
                     <input
                       required
                       type="number"
                       step="1"
                       placeholder="29900"
-                      className="w-full px-5 py-4 bg-blue-50 border border-blue-100 rounded-2xl text-sm focus:ring-4 focus:ring-zinc-900/5 outline-none transition-all"
+                      className="w-full px-5 py-4 bg-zinc-50 border border-zinc-100 rounded-2xl text-sm focus:ring-4 focus:ring-zinc-900/5 outline-none transition-all"
                       value={formData.price}
                       onChange={e => setFormData({...formData, price: e.target.value})}
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 mb-2 ml-1">Stock</label>
+                    <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400 mb-2 ml-1">Stock</label>
                     <input
                       required
                       type="number"
                       placeholder="10"
-                      className="w-full px-5 py-4 bg-blue-50 border border-blue-100 rounded-2xl text-sm focus:ring-4 focus:ring-zinc-900/5 outline-none transition-all"
+                      className="w-full px-5 py-4 bg-zinc-50 border border-zinc-100 rounded-2xl text-sm focus:ring-4 focus:ring-zinc-900/5 outline-none transition-all"
                       value={formData.stock}
                       onChange={e => setFormData({...formData, stock: e.target.value})}
                     />
@@ -623,9 +623,9 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onProductAdded }) => {
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 mb-2 ml-1">Category</label>
+                  <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400 mb-2 ml-1">Category</label>
                   <select
-                    className="w-full px-5 py-4 bg-blue-50 border border-blue-100 rounded-2xl text-sm focus:ring-4 focus:ring-zinc-900/5 outline-none transition-all appearance-none"
+                    className="w-full px-5 py-4 bg-zinc-50 border border-zinc-100 rounded-2xl text-sm focus:ring-4 focus:ring-zinc-900/5 outline-none transition-all appearance-none"
                     value={formData.category}
                     onChange={e => setFormData({...formData, category: e.target.value})}
                   >
@@ -636,28 +636,28 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onProductAdded }) => {
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 mb-2 ml-1">Main Image URL</label>
+                  <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400 mb-2 ml-1">Main Image URL</label>
                   <input
                     required
                     type="url"
                     placeholder="https://images.unsplash.com/..."
-                    className="w-full px-5 py-4 bg-blue-50 border border-blue-100 rounded-2xl text-sm focus:ring-4 focus:ring-zinc-900/5 outline-none transition-all"
+                    className="w-full px-5 py-4 bg-zinc-50 border border-zinc-100 rounded-2xl text-sm focus:ring-4 focus:ring-zinc-900/5 outline-none transition-all"
                     value={formData.image_url}
                     onChange={e => setFormData({...formData, image_url: e.target.value})}
                   />
                   {formData.image_url && (
-                    <div className="mt-3 w-20 h-24 rounded-lg overflow-hidden bg-blue-100">
+                    <div className="mt-3 w-20 h-24 rounded-lg overflow-hidden bg-zinc-100">
                       <img src={formData.image_url} alt="Preview" className="w-full h-full object-cover" />
                     </div>
                   )}
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 mb-2 ml-1">Quick Description</label>
+                  <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400 mb-2 ml-1">Quick Description</label>
                   <textarea
                     rows={2}
                     placeholder="Brief product description..."
-                    className="w-full px-5 py-4 bg-blue-50 border border-blue-100 rounded-2xl text-sm focus:ring-4 focus:ring-zinc-900/5 outline-none transition-all resize-none"
+                    className="w-full px-5 py-4 bg-zinc-50 border border-zinc-100 rounded-2xl text-sm focus:ring-4 focus:ring-zinc-900/5 outline-none transition-all resize-none"
                     value={formData.description}
                     onChange={e => setFormData({...formData, description: e.target.value})}
                   />
@@ -682,7 +682,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onProductAdded }) => {
                 <button
                   type="submit"
                   disabled={loading || !isAdmin}
-                  className="w-full bg-blue-600 text-white py-5 rounded-2xl font-bold hover:opacity-90 transition-all shadow-lg flex items-center justify-center space-x-3 disabled:opacity-50 active:scale-[0.98]"
+                  className="w-full bg-zinc-900 text-white py-5 rounded-2xl font-bold hover:opacity-90 transition-all shadow-lg flex items-center justify-center space-x-3 disabled:opacity-50 active:scale-[0.98]"
                 >
                   {loading ? <Loader2 className="animate-spin" size={20} /> : <span className="uppercase tracking-widest text-xs font-bold">{editingId ? 'Update Product' : 'Publish Item'}</span>}
                 </button>
@@ -692,20 +692,20 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onProductAdded }) => {
             {/* Images Tab */}
             {activeTab === 'images' && editingId && (
               <div className="space-y-6">
-                <p className="text-sm text-slate-500">Add multiple images from different angles.</p>
+                <p className="text-sm text-zinc-500">Add multiple images from different angles.</p>
                 
                 <div className="flex space-x-2">
                   <input
                     type="url"
                     placeholder="https://images.unsplash.com/..."
-                    className="flex-1 px-4 py-3 bg-blue-50 border border-blue-100 rounded-xl text-sm focus:ring-4 focus:ring-zinc-900/5 outline-none"
+                    className="flex-1 px-4 py-3 bg-zinc-50 border border-zinc-100 rounded-xl text-sm focus:ring-4 focus:ring-zinc-900/5 outline-none"
                     value={newImageUrl}
                     onChange={e => setNewImageUrl(e.target.value)}
                   />
                   <button
                     onClick={handleAddImage}
                     disabled={loading || !newImageUrl}
-                    className="px-4 py-3 bg-blue-600 text-white rounded-xl font-bold disabled:opacity-50"
+                    className="px-4 py-3 bg-zinc-900 text-white rounded-xl font-bold disabled:opacity-50"
                   >
                     <Plus size={20} />
                   </button>
@@ -730,7 +730,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onProductAdded }) => {
                 </div>
 
                 {productImages.length === 0 && (
-                  <div className="text-center py-8 bg-blue-50 rounded-xl text-slate-400 text-sm">
+                  <div className="text-center py-8 bg-zinc-50 rounded-xl text-zinc-400 text-sm">
                     No additional images added yet
                   </div>
                 )}
@@ -740,20 +740,20 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onProductAdded }) => {
             {/* Sizes Tab */}
             {activeTab === 'sizes' && editingId && (
               <div className="space-y-6">
-                <p className="text-sm text-slate-500">Add available sizes with individual stock levels.</p>
+                <p className="text-sm text-zinc-500">Add available sizes with individual stock levels.</p>
                 
                 <div className="grid grid-cols-3 gap-2">
                   <input
                     type="text"
                     placeholder="Label (S (4-6))"
-                    className="px-3 py-3 bg-blue-50 border border-blue-100 rounded-xl text-sm focus:ring-4 focus:ring-zinc-900/5 outline-none"
+                    className="px-3 py-3 bg-zinc-50 border border-zinc-100 rounded-xl text-sm focus:ring-4 focus:ring-zinc-900/5 outline-none"
                     value={newSize.size_label}
                     onChange={e => setNewSize({...newSize, size_label: e.target.value})}
                   />
                   <input
                     type="text"
                     placeholder="Value (S)"
-                    className="px-3 py-3 bg-blue-50 border border-blue-100 rounded-xl text-sm focus:ring-4 focus:ring-zinc-900/5 outline-none"
+                    className="px-3 py-3 bg-zinc-50 border border-zinc-100 rounded-xl text-sm focus:ring-4 focus:ring-zinc-900/5 outline-none"
                     value={newSize.size_value}
                     onChange={e => setNewSize({...newSize, size_value: e.target.value})}
                   />
@@ -761,14 +761,14 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onProductAdded }) => {
                     <input
                       type="number"
                       placeholder="Stock"
-                      className="w-full px-3 py-3 bg-blue-50 border border-blue-100 rounded-xl text-sm focus:ring-4 focus:ring-zinc-900/5 outline-none"
+                      className="w-full px-3 py-3 bg-zinc-50 border border-zinc-100 rounded-xl text-sm focus:ring-4 focus:ring-zinc-900/5 outline-none"
                       value={newSize.stock}
                       onChange={e => setNewSize({...newSize, stock: e.target.value})}
                     />
                     <button
                       onClick={handleAddSize}
                       disabled={loading || !newSize.size_label}
-                      className="px-4 py-3 bg-blue-600 text-white rounded-xl font-bold disabled:opacity-50"
+                      className="px-4 py-3 bg-zinc-900 text-white rounded-xl font-bold disabled:opacity-50"
                     >
                       <Plus size={20} />
                     </button>
@@ -777,10 +777,10 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onProductAdded }) => {
 
                 <div className="space-y-2">
                   {productSizes.map(size => (
-                    <div key={size.id} className="flex items-center justify-between bg-blue-50 px-4 py-3 rounded-xl">
+                    <div key={size.id} className="flex items-center justify-between bg-zinc-50 px-4 py-3 rounded-xl">
                       <div>
                         <span className="font-bold text-sm">{size.size_label}</span>
-                        <span className="text-slate-400 text-xs ml-2">({size.size_value})</span>
+                        <span className="text-zinc-400 text-xs ml-2">({size.size_value})</span>
                       </div>
                       <div className="flex items-center space-x-4">
                         <span className={`text-xs font-bold px-2 py-1 rounded ${size.stock < 5 ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-600'}`}>
@@ -788,7 +788,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onProductAdded }) => {
                         </span>
                         <button
                           onClick={() => handleDeleteSize(size.id)}
-                          className="text-slate-400 hover:text-red-500"
+                          className="text-zinc-400 hover:text-red-500"
                         >
                           <Trash2 size={16} />
                         </button>
@@ -798,7 +798,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onProductAdded }) => {
                 </div>
 
                 {productSizes.length === 0 && (
-                  <div className="text-center py-8 bg-blue-50 rounded-xl text-slate-400 text-sm">
+                  <div className="text-center py-8 bg-zinc-50 rounded-xl text-zinc-400 text-sm">
                     No sizes configured - default sizes will be shown
                   </div>
                 )}
@@ -809,22 +809,22 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onProductAdded }) => {
             {activeTab === 'details' && (
               <div className="space-y-5">
                 <div>
-                  <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 mb-2 ml-1">Short Description</label>
+                  <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400 mb-2 ml-1">Short Description</label>
                   <input
                     type="text"
                     placeholder="e.g. Premium tailored blazer for the modern gentleman"
-                    className="w-full px-5 py-4 bg-blue-50 border border-blue-100 rounded-2xl text-sm focus:ring-4 focus:ring-zinc-900/5 outline-none"
+                    className="w-full px-5 py-4 bg-zinc-50 border border-zinc-100 rounded-2xl text-sm focus:ring-4 focus:ring-zinc-900/5 outline-none"
                     value={detailsForm.short_description}
                     onChange={e => setDetailsForm({...detailsForm, short_description: e.target.value})}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 mb-2 ml-1">Full Description</label>
+                  <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400 mb-2 ml-1">Full Description</label>
                   <textarea
                     rows={5}
                     placeholder="Detailed product description with all features and benefits..."
-                    className="w-full px-5 py-4 bg-blue-50 border border-blue-100 rounded-2xl text-sm focus:ring-4 focus:ring-zinc-900/5 outline-none resize-none"
+                    className="w-full px-5 py-4 bg-zinc-50 border border-zinc-100 rounded-2xl text-sm focus:ring-4 focus:ring-zinc-900/5 outline-none resize-none"
                     value={detailsForm.long_description}
                     onChange={e => setDetailsForm({...detailsForm, long_description: e.target.value})}
                   />
@@ -832,21 +832,21 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onProductAdded }) => {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 mb-2 ml-1">Materials</label>
+                    <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400 mb-2 ml-1">Materials</label>
                     <input
                       type="text"
                       placeholder="e.g. 100% Italian Wool"
-                      className="w-full px-5 py-4 bg-blue-50 border border-blue-100 rounded-2xl text-sm focus:ring-4 focus:ring-zinc-900/5 outline-none"
+                      className="w-full px-5 py-4 bg-zinc-50 border border-zinc-100 rounded-2xl text-sm focus:ring-4 focus:ring-zinc-900/5 outline-none"
                       value={detailsForm.materials}
                       onChange={e => setDetailsForm({...detailsForm, materials: e.target.value})}
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 mb-2 ml-1">SKU</label>
+                    <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400 mb-2 ml-1">SKU</label>
                     <input
                       type="text"
                       placeholder="e.g. DNV-BLZ-001"
-                      className="w-full px-5 py-4 bg-blue-50 border border-blue-100 rounded-2xl text-sm focus:ring-4 focus:ring-zinc-900/5 outline-none"
+                      className="w-full px-5 py-4 bg-zinc-50 border border-zinc-100 rounded-2xl text-sm focus:ring-4 focus:ring-zinc-900/5 outline-none"
                       value={detailsForm.sku}
                       onChange={e => setDetailsForm({...detailsForm, sku: e.target.value})}
                     />
@@ -854,51 +854,51 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onProductAdded }) => {
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 mb-2 ml-1">Care Instructions</label>
+                  <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400 mb-2 ml-1">Care Instructions</label>
                   <input
                     type="text"
                     placeholder="e.g. Dry clean only. Store on wide hanger."
-                    className="w-full px-5 py-4 bg-blue-50 border border-blue-100 rounded-2xl text-sm focus:ring-4 focus:ring-zinc-900/5 outline-none"
+                    className="w-full px-5 py-4 bg-zinc-50 border border-zinc-100 rounded-2xl text-sm focus:ring-4 focus:ring-zinc-900/5 outline-none"
                     value={detailsForm.care_instructions}
                     onChange={e => setDetailsForm({...detailsForm, care_instructions: e.target.value})}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 mb-2 ml-1">Features (one per line)</label>
+                  <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400 mb-2 ml-1">Features (one per line)</label>
                   <textarea
                     rows={4}
                     placeholder="Half-canvas construction
 Genuine horn buttons
 Fully lined interior
 Modern slim fit"
-                    className="w-full px-5 py-4 bg-blue-50 border border-blue-100 rounded-2xl text-sm focus:ring-4 focus:ring-zinc-900/5 outline-none resize-none font-mono"
+                    className="w-full px-5 py-4 bg-zinc-50 border border-zinc-100 rounded-2xl text-sm focus:ring-4 focus:ring-zinc-900/5 outline-none resize-none font-mono"
                     value={detailsForm.features}
                     onChange={e => setDetailsForm({...detailsForm, features: e.target.value})}
                   />
                 </div>
 
-                <p className="text-xs text-slate-400">* Details are saved when you save the product in Basic Info tab</p>
+                <p className="text-xs text-zinc-400">* Details are saved when you save the product in Basic Info tab</p>
               </div>
             )}
 
             {/* Bulk Pricing Tab */}
             {activeTab === 'bulk' && editingId && (
               <div className="space-y-6">
-                <p className="text-sm text-slate-500">Set volume discount tiers for bulk orders.</p>
+                <p className="text-sm text-zinc-500">Set volume discount tiers for bulk orders.</p>
                 
                 <div className="grid grid-cols-4 gap-2">
                   <input
                     type="number"
                     placeholder="Min Qty"
-                    className="px-3 py-3 bg-blue-50 border border-blue-100 rounded-xl text-sm focus:ring-4 focus:ring-zinc-900/5 outline-none"
+                    className="px-3 py-3 bg-zinc-50 border border-zinc-100 rounded-xl text-sm focus:ring-4 focus:ring-zinc-900/5 outline-none"
                     value={newBulkTier.min_quantity}
                     onChange={e => setNewBulkTier({...newBulkTier, min_quantity: e.target.value})}
                   />
                   <input
                     type="number"
                     placeholder="Max (opt)"
-                    className="px-3 py-3 bg-blue-50 border border-blue-100 rounded-xl text-sm focus:ring-4 focus:ring-zinc-900/5 outline-none"
+                    className="px-3 py-3 bg-zinc-50 border border-zinc-100 rounded-xl text-sm focus:ring-4 focus:ring-zinc-900/5 outline-none"
                     value={newBulkTier.max_quantity}
                     onChange={e => setNewBulkTier({...newBulkTier, max_quantity: e.target.value})}
                   />
@@ -906,14 +906,14 @@ Modern slim fit"
                     type="number"
                     step="0.1"
                     placeholder="Disc %"
-                    className="px-3 py-3 bg-blue-50 border border-blue-100 rounded-xl text-sm focus:ring-4 focus:ring-zinc-900/5 outline-none"
+                    className="px-3 py-3 bg-zinc-50 border border-zinc-100 rounded-xl text-sm focus:ring-4 focus:ring-zinc-900/5 outline-none"
                     value={newBulkTier.discount_percent}
                     onChange={e => setNewBulkTier({...newBulkTier, discount_percent: e.target.value})}
                   />
                   <button
                     onClick={handleAddBulkTier}
                     disabled={loading || !newBulkTier.min_quantity}
-                    className="px-4 py-3 bg-blue-600 text-white rounded-xl font-bold disabled:opacity-50"
+                    className="px-4 py-3 bg-zinc-900 text-white rounded-xl font-bold disabled:opacity-50"
                   >
                     <Plus size={20} />
                   </button>
@@ -921,7 +921,7 @@ Modern slim fit"
 
                 <div className="space-y-2">
                   {bulkPricing.map(tier => (
-                    <div key={tier.id} className="flex items-center justify-between bg-blue-50 px-4 py-3 rounded-xl">
+                    <div key={tier.id} className="flex items-center justify-between bg-zinc-50 px-4 py-3 rounded-xl">
                       <div>
                         <span className="font-bold text-sm">
                           {tier.min_quantity}+ units
@@ -934,7 +934,7 @@ Modern slim fit"
                         </span>
                         <button
                           onClick={() => handleDeleteBulkTier(tier.id)}
-                          className="text-slate-400 hover:text-red-500"
+                          className="text-zinc-400 hover:text-red-500"
                         >
                           <Trash2 size={16} />
                         </button>
@@ -944,7 +944,7 @@ Modern slim fit"
                 </div>
 
                 {bulkPricing.length === 0 && (
-                  <div className="text-center py-8 bg-blue-50 rounded-xl text-slate-400 text-sm">
+                  <div className="text-center py-8 bg-zinc-50 rounded-xl text-zinc-400 text-sm">
                     No bulk pricing tiers configured
                   </div>
                 )}
@@ -955,13 +955,13 @@ Modern slim fit"
 
         {/* List Column */}
         <div className="lg:col-span-7">
-          <div className="bg-white rounded-[2rem] border border-blue-100 shadow-xl overflow-hidden">
-            <div className="p-8 border-b border-blue-100 flex items-center justify-between">
+          <div className="bg-white rounded-[2rem] border border-zinc-100 shadow-xl overflow-hidden">
+            <div className="p-8 border-b border-zinc-100 flex items-center justify-between">
               <h3 className="text-xl font-display font-bold flex items-center space-x-2">
-                <Settings size={20} className="text-slate-400" />
+                <Settings size={20} className="text-zinc-400" />
                 <span>Live Catalog</span>
               </h3>
-              <div className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+              <div className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">
                 {products.length} Products
               </div>
             </div>
@@ -969,10 +969,10 @@ Modern slim fit"
             <div className="overflow-x-auto">
               <table className="w-full text-left">
                 <thead>
-                  <tr className="bg-blue-50/50">
-                    <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">Product</th>
-                    <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">Stock</th>
-                    <th className="px-8 py-5 text-right text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">Action</th>
+                  <tr className="bg-zinc-50/50">
+                    <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400">Product</th>
+                    <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400">Stock</th>
+                    <th className="px-8 py-5 text-right text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400">Action</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-zinc-50">
@@ -984,26 +984,26 @@ Modern slim fit"
                     </tr>
                   ) : products.length === 0 ? (
                     <tr>
-                      <td colSpan={3} className="px-8 py-20 text-center text-slate-400 text-sm">
+                      <td colSpan={3} className="px-8 py-20 text-center text-zinc-400 text-sm">
                         Database is empty.
                       </td>
                     </tr>
                   ) : (
                     products.map((p) => (
-                      <tr key={p.id} className={`hover:bg-blue-50/30 transition-colors group ${editingId === p.id ? 'bg-blue-50' : ''}`}>
+                      <tr key={p.id} className={`hover:bg-zinc-50/30 transition-colors group ${editingId === p.id ? 'bg-zinc-50' : ''}`}>
                         <td className="px-8 py-5">
                           <div className="flex items-center space-x-4">
-                            <div className="w-12 h-14 bg-blue-100 rounded-lg overflow-hidden flex-shrink-0 shadow-sm border border-blue-100">
+                            <div className="w-12 h-14 bg-zinc-100 rounded-lg overflow-hidden flex-shrink-0 shadow-sm border border-zinc-100">
                               <img src={p.image_url} alt="" className="w-full h-full object-cover" />
                             </div>
                             <div>
-                              <p className="text-sm font-bold text-slate-900 uppercase truncate max-w-[150px]">{p.name}</p>
-                              <p className="text-[10px] text-slate-400 uppercase tracking-widest">{p.category} • {formatPKR(p.price)}</p>
+                              <p className="text-sm font-bold text-zinc-900 uppercase truncate max-w-[150px]">{p.name}</p>
+                              <p className="text-[10px] text-zinc-400 uppercase tracking-widest">{p.category} • {formatPKR(p.price)}</p>
                             </div>
                           </div>
                         </td>
                         <td className="px-8 py-5">
-                          <span className={`text-xs font-bold px-2 py-1 rounded-md ${p.stock < 5 ? 'bg-red-50 text-red-500' : 'bg-blue-100 text-slate-600'}`}>
+                          <span className={`text-xs font-bold px-2 py-1 rounded-md ${p.stock < 5 ? 'bg-red-50 text-red-500' : 'bg-zinc-100 text-zinc-600'}`}>
                             {p.stock}
                           </span>
                         </td>
@@ -1011,7 +1011,7 @@ Modern slim fit"
                           <div className="flex items-center justify-end space-x-2">
                             <button 
                               onClick={() => startEdit(p)}
-                              className="p-3 text-zinc-300 hover:text-slate-900 hover:bg-blue-100 rounded-xl transition-all"
+                              className="p-3 text-zinc-300 hover:text-zinc-900 hover:bg-zinc-100 rounded-xl transition-all"
                             >
                               <Edit3 size={18} />
                             </button>
@@ -1041,7 +1041,7 @@ Modern slim fit"
           {/* Order Stats */}
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
             {[
-              { label: 'All Orders', value: orders.length, filter: 'all', color: 'bg-blue-100 text-slate-900' },
+              { label: 'All Orders', value: orders.length, filter: 'all', color: 'bg-zinc-100 text-zinc-900' },
               { label: 'Pending', value: orders.filter(o => o.status === 'pending').length, filter: 'pending', color: 'bg-amber-100 text-amber-700' },
               { label: 'Confirmed', value: orders.filter(o => o.status === 'confirmed').length, filter: 'confirmed', color: 'bg-blue-100 text-blue-700' },
               { label: 'Shipped', value: orders.filter(o => o.status === 'shipped').length, filter: 'shipped', color: 'bg-purple-100 text-purple-700' },
@@ -1063,12 +1063,12 @@ Modern slim fit"
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Orders List */}
             <div className="lg:col-span-2">
-              <div className="bg-white rounded-2xl border border-blue-100 shadow-sm overflow-hidden">
-                <div className="p-4 border-b border-blue-100 flex justify-between items-center">
+              <div className="bg-white rounded-2xl border border-zinc-100 shadow-sm overflow-hidden">
+                <div className="p-4 border-b border-zinc-100 flex justify-between items-center">
                   <h3 className="font-bold text-lg">Orders</h3>
                   <button 
                     onClick={loadOrders}
-                    className="text-xs text-slate-500 hover:text-slate-900 flex items-center space-x-1"
+                    className="text-xs text-zinc-500 hover:text-zinc-900 flex items-center space-x-1"
                   >
                     <RefreshCw size={14} className={loadingOrders ? 'animate-spin' : ''} />
                     <span>Refresh</span>
@@ -1077,13 +1077,13 @@ Modern slim fit"
 
                 {loadingOrders ? (
                   <div className="p-12 text-center">
-                    <Loader2 size={24} className="animate-spin mx-auto text-slate-400" />
-                    <p className="text-sm text-slate-500 mt-2">Loading orders...</p>
+                    <Loader2 size={24} className="animate-spin mx-auto text-zinc-400" />
+                    <p className="text-sm text-zinc-500 mt-2">Loading orders...</p>
                   </div>
                 ) : filteredOrders.length === 0 ? (
                   <div className="p-12 text-center">
                     <ShoppingCart size={40} className="mx-auto text-zinc-200 mb-3" />
-                    <p className="text-slate-500">No orders found</p>
+                    <p className="text-zinc-500">No orders found</p>
                   </div>
                 ) : (
                   <div className="divide-y divide-zinc-100 max-h-[600px] overflow-y-auto">
@@ -1091,14 +1091,14 @@ Modern slim fit"
                       <div 
                         key={order.id}
                         onClick={() => handleViewOrder(order)}
-                        className={`p-4 hover:bg-blue-50 cursor-pointer transition-all ${
-                          selectedOrder?.id === order.id ? 'bg-blue-50 border-l-4 border-blue-900' : ''
+                        className={`p-4 hover:bg-zinc-50 cursor-pointer transition-all ${
+                          selectedOrder?.id === order.id ? 'bg-zinc-50 border-l-4 border-zinc-900' : ''
                         }`}
                       >
                         <div className="flex justify-between items-start mb-2">
                           <div>
                             <p className="font-bold text-sm">{order.order_number}</p>
-                            <p className="text-xs text-slate-500">{order.customer_name}</p>
+                            <p className="text-xs text-zinc-500">{order.customer_name}</p>
                           </div>
                           <div className="text-right">
                             <p className="font-bold text-sm">{formatPKR(order.total)}</p>
@@ -1108,7 +1108,7 @@ Modern slim fit"
                               ) : (
                                 <CreditCard size={12} className="text-blue-600" />
                               )}
-                              <span className="text-[10px] text-slate-500 uppercase">
+                              <span className="text-[10px] text-zinc-500 uppercase">
                                 {order.payment_method === 'cod' ? 'COD' : 'Online'}
                               </span>
                             </div>
@@ -1125,7 +1125,7 @@ Modern slim fit"
                           }`}>
                             {order.status}
                           </span>
-                          <span className="text-[10px] text-slate-400">
+                          <span className="text-[10px] text-zinc-400">
                             {new Date(order.created_at).toLocaleDateString('en-PK', { 
                               day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
                             })}
@@ -1140,14 +1140,14 @@ Modern slim fit"
 
             {/* Order Details Panel */}
             <div className="lg:col-span-1">
-              <div className="bg-white rounded-2xl border border-blue-100 shadow-sm sticky top-24">
+              <div className="bg-white rounded-2xl border border-zinc-100 shadow-sm sticky top-24">
                 {selectedOrder ? (
                   <div>
-                    <div className="p-4 border-b border-blue-100">
+                    <div className="p-4 border-b border-zinc-100">
                       <div className="flex justify-between items-start">
                         <div>
                           <p className="font-bold">{selectedOrder.order_number}</p>
-                          <p className="text-xs text-slate-500">
+                          <p className="text-xs text-zinc-500">
                             {new Date(selectedOrder.created_at).toLocaleDateString('en-PK', { 
                               weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
                             })}
@@ -1155,7 +1155,7 @@ Modern slim fit"
                         </div>
                         <button 
                           onClick={() => setSelectedOrder(null)}
-                          className="text-slate-400 hover:text-slate-900"
+                          className="text-zinc-400 hover:text-zinc-900"
                         >
                           <X size={18} />
                         </button>
@@ -1165,19 +1165,19 @@ Modern slim fit"
                     <div className="p-4 space-y-4">
                       {/* Customer Info */}
                       <div>
-                        <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Customer</h4>
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-400 mb-2">Customer</h4>
                         <div className="space-y-2">
                           <div className="flex items-center space-x-2 text-sm">
-                            <UserIcon size={14} className="text-slate-400" />
+                            <UserIcon size={14} className="text-zinc-400" />
                             <span>{selectedOrder.customer_name}</span>
                           </div>
                           <div className="flex items-center space-x-2 text-sm">
-                            <Mail size={14} className="text-slate-400" />
+                            <Mail size={14} className="text-zinc-400" />
                             <span className="text-blue-600">{selectedOrder.customer_email}</span>
                           </div>
                           {selectedOrder.customer_phone && (
                             <div className="flex items-center space-x-2 text-sm">
-                              <Phone size={14} className="text-slate-400" />
+                              <Phone size={14} className="text-zinc-400" />
                               <span>{selectedOrder.customer_phone}</span>
                             </div>
                           )}
@@ -1186,9 +1186,9 @@ Modern slim fit"
 
                       {/* Shipping Address */}
                       <div>
-                        <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Shipping</h4>
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-400 mb-2">Shipping</h4>
                         <div className="flex items-start space-x-2 text-sm">
-                          <MapPin size={14} className="text-slate-400 mt-0.5" />
+                          <MapPin size={14} className="text-zinc-400 mt-0.5" />
                           <div>
                             <p>{selectedOrder.shipping_address}</p>
                             <p>{selectedOrder.shipping_city}, {selectedOrder.shipping_state}</p>
@@ -1199,8 +1199,8 @@ Modern slim fit"
 
                       {/* Payment Info */}
                       <div>
-                        <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Payment</h4>
-                        <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-400 mb-2">Payment</h4>
+                        <div className="flex items-center justify-between p-3 bg-zinc-50 rounded-lg">
                           <div className="flex items-center space-x-2">
                             {selectedOrder.payment_method === 'cod' ? (
                               <Banknote size={18} className="text-amber-600" />
@@ -1223,7 +1223,7 @@ Modern slim fit"
 
                       {/* Order Items */}
                       <div>
-                        <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Items</h4>
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-400 mb-2">Items</h4>
                         <div className="space-y-2 max-h-40 overflow-y-auto">
                           {orderItems.map(item => (
                             <div key={item.id} className="flex items-center space-x-2 text-sm">
@@ -1232,7 +1232,7 @@ Modern slim fit"
                               )}
                               <div className="flex-1">
                                 <p className="font-medium truncate">{item.product_name}</p>
-                                <p className="text-xs text-slate-500">
+                                <p className="text-xs text-zinc-500">
                                   {item.size && `Size: ${item.size} • `}
                                   Qty: {item.quantity}
                                 </p>
@@ -1244,13 +1244,13 @@ Modern slim fit"
                       </div>
 
                       {/* Order Summary */}
-                      <div className="border-t border-blue-100 pt-3 space-y-1">
+                      <div className="border-t border-zinc-100 pt-3 space-y-1">
                         <div className="flex justify-between text-sm">
-                          <span className="text-slate-500">Subtotal</span>
+                          <span className="text-zinc-500">Subtotal</span>
                           <span>{formatPKR(selectedOrder.subtotal)}</span>
                         </div>
                         <div className="flex justify-between text-sm">
-                          <span className="text-slate-500">Shipping</span>
+                          <span className="text-zinc-500">Shipping</span>
                           <span>{selectedOrder.shipping_cost === 0 ? 'FREE' : formatPKR(selectedOrder.shipping_cost)}</span>
                         </div>
                         {selectedOrder.discount_amount > 0 && (
@@ -1259,7 +1259,7 @@ Modern slim fit"
                             <span>-{formatPKR(selectedOrder.discount_amount)}</span>
                           </div>
                         )}
-                        <div className="flex justify-between font-bold text-lg pt-2 border-t border-blue-200">
+                        <div className="flex justify-between font-bold text-lg pt-2 border-t border-zinc-200">
                           <span>Total</span>
                           <span>{formatPKR(selectedOrder.total)}</span>
                         </div>
@@ -1268,8 +1268,8 @@ Modern slim fit"
                       {/* Order Notes */}
                       {selectedOrder.order_notes && (
                         <div>
-                          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Notes</h4>
-                          <p className="text-sm text-slate-600 bg-blue-50 p-3 rounded-lg">{selectedOrder.order_notes}</p>
+                          <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-400 mb-2">Notes</h4>
+                          <p className="text-sm text-zinc-600 bg-zinc-50 p-3 rounded-lg">{selectedOrder.order_notes}</p>
                         </div>
                       )}
 
@@ -1283,7 +1283,7 @@ Modern slim fit"
 
                       {/* Status Update Buttons */}
                       <div>
-                        <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Update Status & Send Email</h4>
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-400 mb-2">Update Status & Send Email</h4>
                         <div className="grid grid-cols-2 gap-2">
                           <button
                             onClick={() => handleUpdateOrderStatus(selectedOrder.id, 'confirmed')}
@@ -1318,7 +1318,7 @@ Modern slim fit"
                             <span>Cancel</span>
                           </button>
                         </div>
-                        <p className="text-[10px] text-slate-400 mt-2 text-center">
+                        <p className="text-[10px] text-zinc-400 mt-2 text-center">
                           Customer will receive email notification
                         </p>
                       </div>
@@ -1326,7 +1326,7 @@ Modern slim fit"
                       {/* Payment Status for COD */}
                       {selectedOrder.payment_method === 'cod' && (
                         <div>
-                          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Payment Status</h4>
+                          <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-400 mb-2">Payment Status</h4>
                           <button
                             onClick={() => handleUpdatePaymentStatus(selectedOrder.id, 'paid')}
                             disabled={selectedOrder.payment_status === 'paid' || !isAdmin || updatingOrder}
@@ -1342,7 +1342,7 @@ Modern slim fit"
                 ) : (
                   <div className="p-12 text-center">
                     <Eye size={40} className="mx-auto text-zinc-200 mb-3" />
-                    <p className="text-slate-500 text-sm">Select an order to view details</p>
+                    <p className="text-zinc-500 text-sm">Select an order to view details</p>
                   </div>
                 )}
               </div>
